@@ -1,0 +1,3246 @@
+From 1ff95d35fec73cb82514af5ce24f3c981af0a4ec Mon Sep 17 00:00:00 2001
+From: Desyslava-gs <84912601+Desyslava-gs@users.noreply.github.com>
+Date: Tue, 13 Jul 2021 04:38:48 +0300
+Subject: [PATCH 2/8] Add New Table-FuelType
+
+---
+ .../Pages/Account/ForgotPassword.cshtml       |  30 +-
+ .../Areas/Identity/Pages/Account/Login.cshtml | 100 ++---
+ .../Pages/Account/Manage/_Layout.cshtml       |  20 +-
+ .../Identity/Pages/Account/Register.cshtml    | 100 ++---
+ .../Account/ResendEmailConfirmation.cshtml    |  26 +-
+ .../WebApp/Controllers/CarsController.cs      | 168 +++++++-
+ .../WebApp/Controllers/RepairsController.cs   | 160 +++++++
+ WebAppDEMO/WebApp/Data/CarRepairDbContext.cs  |  38 ++
+ WebAppDEMO/WebApp/Data/DataConstants.cs       |  22 +
+ ...20210710011240_CarRepairTables.Designer.cs | 369 ++++++++++++++++
+ .../20210710011240_CarRepairTables.cs         |  66 +++
+ ...0210713001330_AddFuelTypeTable.Designer.cs | 397 ++++++++++++++++++
+ .../20210713001330_AddFuelTypeTable.cs        |  71 ++++
+ .../ApplicationDbContextModelSnapshot.cs      |  36 +-
+ WebAppDEMO/WebApp/Data/Models/Car.cs          |  53 +++
+ WebAppDEMO/WebApp/Data/Models/FuelType.cs     |  18 +
+ WebAppDEMO/WebApp/Data/Models/Repair.cs       |  32 ++
+ .../ApplicationBuilderExtensions.cs           |  65 +++
+ .../WebApp/Models/Cars/CreateCarFormModel.cs  |  34 ++
+ .../WebApp/Models/Cars/FuelTypeViewModel.cs   |  13 +
+ .../Models/Repairs/AddRepairFormModel.cs      |  18 +
+ WebAppDEMO/WebApp/Views/Cars/Create.cshtml    | 116 +++++
+ WebAppDEMO/WebApp/Views/Cars/Delete.cshtml    |  82 ++++
+ WebAppDEMO/WebApp/Views/Cars/Details.cshtml   |  85 ++++
+ WebAppDEMO/WebApp/Views/Cars/Edit.cshtml      |  94 +++++
+ WebAppDEMO/WebApp/Views/Cars/Index.cshtml     | 114 +++++
+ WebAppDEMO/WebApp/Views/Home/Contacts.cshtml  |  32 ++
+ WebAppDEMO/WebApp/Views/Home/Services.cshtml  |  28 ++
+ WebAppDEMO/WebApp/Views/Repairs/Add.cshtml    |  51 +++
+ WebAppDEMO/WebApp/Views/Repairs/Create.cshtml |  54 +++
+ WebAppDEMO/WebApp/Views/Repairs/Delete.cshtml |  51 +++
+ .../WebApp/Views/Repairs/Details.cshtml       |  48 +++
+ WebAppDEMO/WebApp/Views/Repairs/Edit.cshtml   |  51 +++
+ WebAppDEMO/WebApp/Views/Repairs/Index.cshtml  |  59 +++
+ WebAppDEMO/WebApp/Views/Shared/_Layout.cshtml |  38 +-
+ .../WebApp/Views/Shared/_LoginPartial.cshtml  |  14 +-
+ WebAppDEMO/WebApp/wwwroot/css/site.css        |  19 +-
+ 37 files changed, 2593 insertions(+), 179 deletions(-)
+ create mode 100644 WebAppDEMO/WebApp/Controllers/RepairsController.cs
+ create mode 100644 WebAppDEMO/WebApp/Data/CarRepairDbContext.cs
+ create mode 100644 WebAppDEMO/WebApp/Data/DataConstants.cs
+ create mode 100644 WebAppDEMO/WebApp/Data/Migrations/20210710011240_CarRepairTables.Designer.cs
+ create mode 100644 WebAppDEMO/WebApp/Data/Migrations/20210710011240_CarRepairTables.cs
+ create mode 100644 WebAppDEMO/WebApp/Data/Migrations/20210713001330_AddFuelTypeTable.Designer.cs
+ create mode 100644 WebAppDEMO/WebApp/Data/Migrations/20210713001330_AddFuelTypeTable.cs
+ create mode 100644 WebAppDEMO/WebApp/Data/Models/Car.cs
+ create mode 100644 WebAppDEMO/WebApp/Data/Models/FuelType.cs
+ create mode 100644 WebAppDEMO/WebApp/Data/Models/Repair.cs
+ create mode 100644 WebAppDEMO/WebApp/Infrastructure/ApplicationBuilderExtensions.cs
+ create mode 100644 WebAppDEMO/WebApp/Models/Cars/CreateCarFormModel.cs
+ create mode 100644 WebAppDEMO/WebApp/Models/Cars/FuelTypeViewModel.cs
+ create mode 100644 WebAppDEMO/WebApp/Models/Repairs/AddRepairFormModel.cs
+ create mode 100644 WebAppDEMO/WebApp/Views/Cars/Create.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Cars/Delete.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Cars/Details.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Cars/Edit.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Cars/Index.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Home/Contacts.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Home/Services.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Repairs/Add.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Repairs/Create.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Repairs/Delete.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Repairs/Details.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Repairs/Edit.cshtml
+ create mode 100644 WebAppDEMO/WebApp/Views/Repairs/Index.cshtml
+
+diff --git a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/ForgotPassword.cshtml b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/ForgotPassword.cshtml
+index 94f46b2..8745f9b 100644
+--- a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/ForgotPassword.cshtml
++++ b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/ForgotPassword.cshtml
+@@ -4,22 +4,24 @@
+     ViewData["Title"] = "Forgot your password?";
+ }
+ 
+-<h1>@ViewData["Title"]</h1>
+-<h4>Enter your email.</h4>
+-<hr />
+-<div class="row">
+-    <div class="col-md-4">
+-        <form method="post">
+-            <div asp-validation-summary="All" class="text-danger"></div>
+-            <div class="form-group">
+-                <label asp-for="Input.Email"></label>
+-                <input asp-for="Input.Email" class="form-control" />
+-                <span asp-validation-for="Input.Email" class="text-danger"></span>
++    <h1>@ViewData["Title"]</h1>
++    <h4>Enter your email.</h4>
++    <hr />
++    <div class="container-fluid">
++        <div class="row">
++            <div class="col-md-4">
++                <form method="post">
++                    <div asp-validation-summary="All" class="text-danger"></div>
++                    <div class="form-group">
++                        <label asp-for="Input.Email"></label>
++                        <input asp-for="Input.Email" class="form-control" />
++                        <span asp-validation-for="Input.Email" class="text-danger"></span>
++                    </div>
++                    <button type="submit" class="btn btn-primary">Submit</button>
++                </form>
+             </div>
+-            <button type="submit" class="btn btn-primary">Submit</button>
+-        </form>
++        </div>
+     </div>
+-</div>
+ 
+ @section Scripts {
+     <partial name="_ValidationScriptsPartial" />
+diff --git a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Login.cshtml b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Login.cshtml
+index 8e4d327..f7aa9e9 100644
+--- a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Login.cshtml
++++ b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Login.cshtml
+@@ -6,53 +6,54 @@
+ }
+ 
+ <h1>@ViewData["Title"]</h1>
+-<div class="row">
+-    <div class="col-md-4">
+-        <section>
+-            <form id="account" method="post">
+-                <h4>Use a local account to log in.</h4>
+-                <hr />
+-                <div asp-validation-summary="All" class="text-danger"></div>
+-                <div class="form-group">
+-                    <label asp-for="Input.Email"></label>
+-                    <input asp-for="Input.Email" class="form-control" />
+-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+-                </div>
+-                <div class="form-group">
+-                    <label asp-for="Input.Password"></label>
+-                    <input asp-for="Input.Password" class="form-control" />
+-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+-                </div>
+-                <div class="form-group">
+-                    <div class="checkbox">
+-                        <label asp-for="Input.RememberMe">
+-                            <input asp-for="Input.RememberMe" />
+-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+-                        </label>
++<div class="container">
++    <div class="row">
++        <div class="col-md-4">
++            <section>
++                <form id="account" method="post">
++                    <h4>Use a local account to log in.</h4>
++                    <hr />
++                    <div asp-validation-summary="All" class="text-danger"></div>
++                    <div class="form-group">
++                        <label asp-for="Input.Email"></label>
++                        <input asp-for="Input.Email" class="form-control" />
++                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                     </div>
+-                </div>
+-                <div class="form-group">
+-                    <button type="submit" class="btn btn-primary">Log in</button>
+-                </div>
+-                <div class="form-group">
+-                    <p>
+-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+-                    </p>
+-                    <p>
+-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+-                    </p>
+-                    <p>
+-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+-                    </p>
+-                </div>
+-            </form>
+-        </section>
+-    </div>
+-    <div class="col-md-6 col-md-offset-2">
+-        <section>
+-            <h4>Use another service to log in.</h4>
+-            <hr />
+-            @{
++                    <div class="form-group">
++                        <label asp-for="Input.Password"></label>
++                        <input asp-for="Input.Password" class="form-control" />
++                        <span asp-validation-for="Input.Password" class="text-danger"></span>
++                    </div>
++                    <div class="form-group">
++                        <div class="checkbox">
++                            <label asp-for="Input.RememberMe">
++                                <input asp-for="Input.RememberMe" />
++                                @Html.DisplayNameFor(m => m.Input.RememberMe)
++                            </label>
++                        </div>
++                    </div>
++                    <div class="form-group">
++                        <button type="submit" class="btn btn-primary">Log in</button>
++                    </div>
++                    <div class="form-group">
++                        <p>
++                            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
++                        </p>
++                        <p>
++                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
++                        </p>
++                        <p>
++                            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
++                        </p>
++                    </div>
++                </form>
++            </section>
++        </div>
++        <div class="col-md-6 col-md-offset-2">
++            <section>
++                <h4>Use another service to log in.</h4>
++                <hr />
++                @{
+                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                 {
+                     <div>
+@@ -69,14 +70,15 @@
+                             <p>
+                                 @foreach (var provider in Model.ExternalLogins)
+                                 {
+-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
++                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                 }
+                             </p>
+                         </div>
+                     </form>
+                 }
+-            }
+-        </section>
++                }
++            </section>
++        </div>
+     </div>
+ </div>
+ 
+diff --git a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Manage/_Layout.cshtml b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Manage/_Layout.cshtml
+index 3d882cc..eaa7425 100644
+--- a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Manage/_Layout.cshtml
++++ b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Manage/_Layout.cshtml
+@@ -9,18 +9,16 @@
+     }
+ }
+ 
+-<h2>Manage your account</h2>
+ 
+-<div>
+-    <h4>Change your account settings</h4>
+-    <hr />
+-    <div class="row">
+-        <div class="col-md-3">
+-            <partial name="_ManageNav" />
+-        </div>
+-        <div class="col-md-9">
+-            @RenderBody()
+-        </div>
++<h2>Manage your account</h2>
++<h4>Change your account settings</h4>
++<hr />
++<div class="row">
++    <div class="col-md-3">
++        <partial name="_ManageNav" />
++    </div>
++    <div class="col-md-9">
++        @RenderBody()
+     </div>
+ </div>
+ 
+diff --git a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Register.cshtml b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Register.cshtml
+index d9b50ab..249ec8f 100644
+--- a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Register.cshtml
++++ b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/Register.cshtml
+@@ -6,62 +6,64 @@
+ 
+ <h1>@ViewData["Title"]</h1>
+ 
+-<div class="row">
+-    <div class="col-md-4">
+-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+-            <h4>Create a new account.</h4>
+-            <hr />
+-            <div asp-validation-summary="All" class="text-danger"></div>
+-            <div class="form-group">
+-                <label asp-for="Input.Email"></label>
+-                <input asp-for="Input.Email" class="form-control" />
+-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+-            </div>
+-            <div class="form-group">
+-                <label asp-for="Input.Password"></label>
+-                <input asp-for="Input.Password" class="form-control" />
+-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+-            </div>
+-            <div class="form-group">
+-                <label asp-for="Input.ConfirmPassword"></label>
+-                <input asp-for="Input.ConfirmPassword" class="form-control" />
+-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+-            </div>
+-            <button type="submit" class="btn btn-primary">Register</button>
+-        </form>
+-    </div>
+-    <div class="col-md-6 col-md-offset-2">
+-        <section>
+-            <h4>Use another service to register.</h4>
+-            <hr />
+-            @{
+-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+-                {
+-                    <div>
+-                        <p>
+-                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+-                            for details on setting up this ASP.NET application to support logging in via external services.
+-                        </p>
+-                    </div>
+-                }
+-                else
+-                {
+-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
++<div class="container">
++    <div class="row">
++        <div class="col-md-4">
++            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
++                <h4>Create a new account.</h4>
++                <hr />
++                <div asp-validation-summary="All" class="text-danger"></div>
++                <div class="form-group">
++                    <label asp-for="Input.Email"></label>
++                    <input asp-for="Input.Email" class="form-control" />
++                    <span asp-validation-for="Input.Email" class="text-danger"></span>
++                </div>
++                <div class="form-group">
++                    <label asp-for="Input.Password"></label>
++                    <input asp-for="Input.Password" class="form-control" />
++                    <span asp-validation-for="Input.Password" class="text-danger"></span>
++                </div>
++                <div class="form-group">
++                    <label asp-for="Input.ConfirmPassword"></label>
++                    <input asp-for="Input.ConfirmPassword" class="form-control" />
++                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
++                </div>
++                <button type="submit" class="btn btn-primary">Register</button>
++            </form>
++        </div>
++        <div class="col-md-6 col-md-offset-2">
++            <section>
++                <h4>Use another service to register.</h4>
++                <hr />
++                @{
++                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
++                    {
+                         <div>
+                             <p>
+-                                @foreach (var provider in Model.ExternalLogins)
+-                                {
+-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+-                                }
++                                There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
++                                for details on setting up this ASP.NET application to support logging in via external services.
+                             </p>
+                         </div>
+-                    </form>
++                    }
++                    else
++                    {
++                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
++                            <div>
++                                <p>
++                                    @foreach (var provider in Model.ExternalLogins)
++                                    {
++                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
++                                    }
++                                </p>
++                            </div>
++                        </form>
++                    }
+                 }
+-            }
+-        </section>
++            </section>
++        </div>
+     </div>
+-</div>
+ 
++</div>
+ @section Scripts {
+     <partial name="_ValidationScriptsPartial" />
+ }
+diff --git a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/ResendEmailConfirmation.cshtml b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/ResendEmailConfirmation.cshtml
+index 8578c23..28669cd 100644
+--- a/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/ResendEmailConfirmation.cshtml
++++ b/WebAppDEMO/WebApp/Areas/Identity/Pages/Account/ResendEmailConfirmation.cshtml
+@@ -6,21 +6,21 @@
+ 
+ <h1>@ViewData["Title"]</h1>
+ <h4>Enter your email.</h4>
+-<hr />
+-<div class="row">
+-    <div class="col-md-4">
+-        <form method="post">
+-            <div asp-validation-summary="All" class="text-danger"></div>
+-            <div class="form-group">
+-                <label asp-for="Input.Email"></label>
+-                <input asp-for="Input.Email" class="form-control" />
+-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+-            </div>
+-            <button type="submit" class="btn btn-primary">Resend</button>
+-        </form>
++<hr />  <div class="container-fluid">
++    <div class="row">
++        <div class="col-md-4">
++            <form method="post">
++                <div asp-validation-summary="All" class="text-danger"></div>
++                <div class="form-group">
++                    <label asp-for="Input.Email"></label>
++                    <input asp-for="Input.Email" class="form-control" />
++                    <span asp-validation-for="Input.Email" class="text-danger"></span>
++                </div>
++                <button type="submit" class="btn btn-primary">Resend</button>
++            </form>
++        </div>
+     </div>
+ </div>
+-
+ @section Scripts {
+     <partial name="_ValidationScriptsPartial" />
+ }
+diff --git a/WebAppDEMO/WebApp/Controllers/CarsController.cs b/WebAppDEMO/WebApp/Controllers/CarsController.cs
+index 554526e..6ae14e8 100644
+--- a/WebAppDEMO/WebApp/Controllers/CarsController.cs
++++ b/WebAppDEMO/WebApp/Controllers/CarsController.cs
+@@ -3,22 +3,180 @@ using System.Collections.Generic;
+ using System.Linq;
+ using System.Threading.Tasks;
+ using Microsoft.AspNetCore.Mvc;
++using Microsoft.AspNetCore.Mvc.Rendering;
++using Microsoft.EntityFrameworkCore;
++using WebApp.Data;
++using WebApp.Data.Models;
+ using WebApp.Models.Cars;
+ 
+ namespace WebApp.Controllers
+ {
+     public class CarsController : Controller
+     {
+-        public IActionResult Add()
++        private readonly CarRepairDbContext _context;
++
++        public CarsController(CarRepairDbContext context)
++        {
++            _context = context;
++        }
++
++        // GET: Cars1
++        public async Task<IActionResult> Index()
++        {
++            return View(await _context.Cars.ToListAsync());
++        }
++
++        // GET: Cars1/Details/5
++        public async Task<IActionResult> Details(string id)
++        {
++            if (id == null)
++            {
++                return NotFound();
++            }
++
++            var car = await _context.Cars
++                .FirstOrDefaultAsync(m => m.Id == id);
++            if (car == null)
++            {
++                return NotFound();
++            }
++
++            return View(car);
++        }
++
++        // GET: Cars1/Create
++        public IActionResult Create()
++        {
++            return View(new CreateCarFormModel
++            {
++                FuelTypes= this.GetFuelType()
++            });
++        }
++
++        [HttpPost]
++        [ValidateAntiForgeryToken]
++        public IActionResult Create(CreateCarFormModel car)
++        {
++            if (ModelState.IsValid)
++            {
++                var carData = new Car
++                {
++                    Make = car.Make,
++                    Model = car.Model,
++                    Color = car.Color,
++                    Description = car.Description,
++                    FuelTypeId= car.FuelTypeId,
++                    PictureUrl = car.PictureUrl,
++                    PlateNumber = car.PlateNumber,
++                    VinNumber = car.VinNumber,
++                    Year = car.Year,
++                    Repairs = new List<Repair>(),
++
++                };
++                this._context.Cars.Add(carData);
++                this._context.SaveChanges();
++
++                 return RedirectToAction("Index");
++            }
++            return View(car);
++        }
++
++        private IEnumerable<FuelTypeViewModel> GetFuelType()
++        {
++            return _context
++                .FuelTypes
++                .Select(ft =>  new FuelTypeViewModel
++                {
++                    Id=ft.Id,
++                    Name = ft.Name,
++
++                }).ToList();
++
++
++        }
++        // GET: Cars1/Edit/5
++        public async Task<IActionResult> Edit(string id)
+         {
+-            return View();
++            if (id == null)
++            {
++                return NotFound();
++            }
++
++            var car = await _context.Cars.FindAsync(id);
++            if (car == null)
++            {
++                return NotFound();
++            }
++            return View(car);
+         }
+ 
++        // POST: Cars1/Edit/5
++        // To protect from overposting attacks, enable the specific properties you want to bind to.
++        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+         [HttpPost]
+-        public IActionResult Add(AddCarFormModel car)
++        [ValidateAntiForgeryToken]
++        public async Task<IActionResult> Edit(string id, [Bind("Id,Make,Model,Year,Color,PlateNumber,Fuel,VinNumber,PictureUrl,Description")] Car car)
+         {
+-            return View();
++            if (id != car.Id)
++            {
++                return NotFound();
++            }
++
++            if (ModelState.IsValid)
++            {
++                try
++                {
++                    _context.Update(car);
++                    await _context.SaveChangesAsync();
++                }
++                catch (DbUpdateConcurrencyException)
++                {
++                    if (!CarExists(car.Id))
++                    {
++                        return NotFound();
++                    }
++                    else
++                    {
++                        throw;
++                    }
++                }
++                return RedirectToAction(nameof(Index));
++            }
++            return View(car);
+         }
+ 
++        // GET: Cars1/Delete/5
++        public async Task<IActionResult> Delete(string id)
++        {
++            if (id == null)
++            {
++                return NotFound();
++            }
++
++            var car = await _context.Cars
++                .FirstOrDefaultAsync(m => m.Id == id);
++            if (car == null)
++            {
++                return NotFound();
++            }
++
++            return View(car);
++        }
++
++        // POST: Cars1/Delete/5
++        [HttpPost, ActionName("Delete")]
++        [ValidateAntiForgeryToken]
++        public async Task<IActionResult> DeleteConfirmed(string id)
++        {
++            var car = await _context.Cars.FindAsync(id);
++            _context.Cars.Remove(car);
++            await _context.SaveChangesAsync();
++            return RedirectToAction(nameof(Index));
++        }
++
++        private bool CarExists(string id)
++        {
++            return _context.Cars.Any(e => e.Id == id);
++        }
+     }
+-} 
++}
+diff --git a/WebAppDEMO/WebApp/Controllers/RepairsController.cs b/WebAppDEMO/WebApp/Controllers/RepairsController.cs
+new file mode 100644
+index 0000000..cf2bf26
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Controllers/RepairsController.cs
+@@ -0,0 +1,160 @@
++﻿using System;
++using System.Collections.Generic;
++using System.Linq;
++using System.Threading.Tasks;
++using Microsoft.AspNetCore.Mvc;
++using Microsoft.AspNetCore.Mvc.Rendering;
++using Microsoft.EntityFrameworkCore;
++using WebApp.Data;
++using WebApp.Data.Models;
++
++namespace WebApp.Controllers
++{
++    public class RepairsController : Controller
++    {
++        private readonly CarRepairDbContext _context;
++
++        public RepairsController(CarRepairDbContext context)
++        {
++            _context = context;
++        }
++
++        // GET: Repairs
++        public async Task<IActionResult> Index()
++        {
++            var carRepairDbContext = _context.Repairs.Include(r => r.Car);
++            return View(await carRepairDbContext.ToListAsync());
++        }
++
++        // GET: Repairs/Details/5
++        public async Task<IActionResult> Details(string id)
++        {
++            if (id == null)
++            {
++                return NotFound();
++            }
++
++            var repair = await _context.Repairs
++                .Include(r => r.Car)
++                .FirstOrDefaultAsync(m => m.Id == id);
++            if (repair == null)
++            {
++                return NotFound();
++            }
++
++            return View(repair);
++        }
++
++        // GET: Repairs/Create
++        public IActionResult Create()
++        {
++            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Id");
++            return View();
++        }
++
++        // POST: Repairs/Create
++        // To protect from overposting attacks, enable the specific properties you want to bind to.
++        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
++        [HttpPost]
++        [ValidateAntiForgeryToken]
++        public async Task<IActionResult> Create([Bind("Id,TypeOfRepair,Price,StartDate,EndDate,CarId")] Repair repair)
++        {
++            if (ModelState.IsValid)
++            {
++                _context.Add(repair);
++                await _context.SaveChangesAsync();
++                return RedirectToAction(nameof(Index));
++            }
++            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Id", repair.CarId);
++            return View(repair);
++        }
++
++        // GET: Repairs/Edit/5
++        public async Task<IActionResult> Edit(string id)
++        {
++            if (id == null)
++            {
++                return NotFound();
++            }
++
++            var repair = await _context.Repairs.FindAsync(id);
++            if (repair == null)
++            {
++                return NotFound();
++            }
++            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Id", repair.CarId);
++            return View(repair);
++        }
++
++        // POST: Repairs/Edit/5
++        // To protect from overposting attacks, enable the specific properties you want to bind to.
++        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
++        [HttpPost]
++        [ValidateAntiForgeryToken]
++        public async Task<IActionResult> Edit(string id, [Bind("Id,TypeOfRepair,Price,StartDate,EndDate,CarId")] Repair repair)
++        {
++            if (id != repair.Id)
++            {
++                return NotFound();
++            }
++
++            if (ModelState.IsValid)
++            {
++                try
++                {
++                    _context.Update(repair);
++                    await _context.SaveChangesAsync();
++                }
++                catch (DbUpdateConcurrencyException)
++                {
++                    if (!RepairExists(repair.Id))
++                    {
++                        return NotFound();
++                    }
++                    else
++                    {
++                        throw;
++                    }
++                }
++                return RedirectToAction(nameof(Index));
++            }
++            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Id", repair.CarId);
++            return View(repair);
++        }
++
++        // GET: Repairs/Delete/5
++        public async Task<IActionResult> Delete(string id)
++        {
++            if (id == null)
++            {
++                return NotFound();
++            }
++
++            var repair = await _context.Repairs
++                .Include(r => r.Car)
++                .FirstOrDefaultAsync(m => m.Id == id);
++            if (repair == null)
++            {
++                return NotFound();
++            }
++
++            return View(repair);
++        }
++
++        // POST: Repairs/Delete/5
++        [HttpPost, ActionName("Delete")]
++        [ValidateAntiForgeryToken]
++        public async Task<IActionResult> DeleteConfirmed(string id)
++        {
++            var repair = await _context.Repairs.FindAsync(id);
++            _context.Repairs.Remove(repair);
++            await _context.SaveChangesAsync();
++            return RedirectToAction(nameof(Index));
++        }
++
++        private bool RepairExists(string id)
++        {
++            return _context.Repairs.Any(e => e.Id == id);
++        }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Data/CarRepairDbContext.cs b/WebAppDEMO/WebApp/Data/CarRepairDbContext.cs
+new file mode 100644
+index 0000000..b781ff8
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Data/CarRepairDbContext.cs
+@@ -0,0 +1,38 @@
++﻿using System;
++using System.Collections.Generic;
++using System.Text;
++using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
++using Microsoft.EntityFrameworkCore;
++using WebApp.Data.Models;
++
++namespace WebApp.Data
++{
++    public class CarRepairDbContext : IdentityDbContext
++    {
++        public CarRepairDbContext(DbContextOptions<CarRepairDbContext> options)
++            : base(options)
++        {
++        }
++
++        public DbSet<Car> Cars { get; set; }
++        public DbSet<FuelType> FuelTypes { get; set; }
++        public DbSet<Repair> Repairs { get; set; }
++
++        protected override void OnModelCreating(ModelBuilder builder)
++        {
++            builder.Entity<Repair>()
++                .HasOne(c=>c.Car)
++                .WithMany(c => c.Repairs)
++                .HasForeignKey(c=>c.CarId)
++                .OnDelete(deleteBehavior:DeleteBehavior.Restrict);
++
++            builder.Entity<Car>()
++                .HasOne(ft=>ft.FuelType)
++                .WithMany(ft => ft.Cars)
++                .HasForeignKey(ft=>ft.Id)
++                .OnDelete(deleteBehavior:DeleteBehavior.Restrict);
++
++            base.OnModelCreating(builder);
++        }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Data/DataConstants.cs b/WebAppDEMO/WebApp/Data/DataConstants.cs
+new file mode 100644
+index 0000000..91ebfb0
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Data/DataConstants.cs
+@@ -0,0 +1,22 @@
++﻿using System;
++using System.Collections.Generic;
++using System.ComponentModel;
++using System.Data;
++using System.Linq;
++using System.Threading.Tasks;
++
++namespace WebApp.Data
++{
++    public class DataConstants
++    {
++        public const int CarMakeMaxLength = 20;
++        public const int CarModelMaxLength = 30;
++        public const int CarYearMinValue = 1900;
++        public const int CarYearMaxValue =2100;
++
++        public const int CarFuelKindMaxLength= 10;
++        public const int CarPlateNumberMaxLength = 8;
++        public const int CarVinNumberMaxLength = 50;
++        public const int CarColorMaxLength = 10;
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Data/Migrations/20210710011240_CarRepairTables.Designer.cs b/WebAppDEMO/WebApp/Data/Migrations/20210710011240_CarRepairTables.Designer.cs
+new file mode 100644
+index 0000000..11e3fa7
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Data/Migrations/20210710011240_CarRepairTables.Designer.cs
+@@ -0,0 +1,369 @@
++﻿// <auto-generated />
++using System;
++using Microsoft.EntityFrameworkCore;
++using Microsoft.EntityFrameworkCore.Infrastructure;
++using Microsoft.EntityFrameworkCore.Metadata;
++using Microsoft.EntityFrameworkCore.Migrations;
++using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
++using WebApp.Data;
++
++namespace WebApp.Data.Migrations
++{
++    [DbContext(typeof(CarRepairDbContext))]
++    [Migration("20210710011240_CarRepairTables")]
++    partial class CarRepairTables
++    {
++        protected override void BuildTargetModel(ModelBuilder modelBuilder)
++        {
++#pragma warning disable 612, 618
++            modelBuilder
++                .HasAnnotation("Relational:MaxIdentifierLength", 128)
++                .HasAnnotation("ProductVersion", "5.0.6")
++                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("ConcurrencyStamp")
++                        .IsConcurrencyToken()
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("Name")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.Property<string>("NormalizedName")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("NormalizedName")
++                        .IsUnique()
++                        .HasDatabaseName("RoleNameIndex")
++                        .HasFilter("[NormalizedName] IS NOT NULL");
++
++                    b.ToTable("AspNetRoles");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
++                {
++                    b.Property<int>("Id")
++                        .ValueGeneratedOnAdd()
++                        .HasColumnType("int")
++                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
++
++                    b.Property<string>("ClaimType")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("ClaimValue")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("RoleId")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(450)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("RoleId");
++
++                    b.ToTable("AspNetRoleClaims");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<int>("AccessFailedCount")
++                        .HasColumnType("int");
++
++                    b.Property<string>("ConcurrencyStamp")
++                        .IsConcurrencyToken()
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("Email")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.Property<bool>("EmailConfirmed")
++                        .HasColumnType("bit");
++
++                    b.Property<bool>("LockoutEnabled")
++                        .HasColumnType("bit");
++
++                    b.Property<DateTimeOffset?>("LockoutEnd")
++                        .HasColumnType("datetimeoffset");
++
++                    b.Property<string>("NormalizedEmail")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.Property<string>("NormalizedUserName")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.Property<string>("PasswordHash")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("PhoneNumber")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<bool>("PhoneNumberConfirmed")
++                        .HasColumnType("bit");
++
++                    b.Property<string>("SecurityStamp")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<bool>("TwoFactorEnabled")
++                        .HasColumnType("bit");
++
++                    b.Property<string>("UserName")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("NormalizedEmail")
++                        .HasDatabaseName("EmailIndex");
++
++                    b.HasIndex("NormalizedUserName")
++                        .IsUnique()
++                        .HasDatabaseName("UserNameIndex")
++                        .HasFilter("[NormalizedUserName] IS NOT NULL");
++
++                    b.ToTable("AspNetUsers");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
++                {
++                    b.Property<int>("Id")
++                        .ValueGeneratedOnAdd()
++                        .HasColumnType("int")
++                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
++
++                    b.Property<string>("ClaimType")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("ClaimValue")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("UserId")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(450)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("UserId");
++
++                    b.ToTable("AspNetUserClaims");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
++                {
++                    b.Property<string>("LoginProvider")
++                        .HasMaxLength(128)
++                        .HasColumnType("nvarchar(128)");
++
++                    b.Property<string>("ProviderKey")
++                        .HasMaxLength(128)
++                        .HasColumnType("nvarchar(128)");
++
++                    b.Property<string>("ProviderDisplayName")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("UserId")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(450)");
++
++                    b.HasKey("LoginProvider", "ProviderKey");
++
++                    b.HasIndex("UserId");
++
++                    b.ToTable("AspNetUserLogins");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
++                {
++                    b.Property<string>("UserId")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("RoleId")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.HasKey("UserId", "RoleId");
++
++                    b.HasIndex("RoleId");
++
++                    b.ToTable("AspNetUserRoles");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
++                {
++                    b.Property<string>("UserId")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("LoginProvider")
++                        .HasMaxLength(128)
++                        .HasColumnType("nvarchar(128)");
++
++                    b.Property<string>("Name")
++                        .HasMaxLength(128)
++                        .HasColumnType("nvarchar(128)");
++
++                    b.Property<string>("Value")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.HasKey("UserId", "LoginProvider", "Name");
++
++                    b.ToTable("AspNetUserTokens");
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.Car", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("Color")
++                        .HasMaxLength(10)
++                        .HasColumnType("nvarchar(10)");
++
++                    b.Property<string>("Description")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("Fuel")
++                        .IsRequired()
++                        .HasMaxLength(10)
++                        .HasColumnType("nvarchar(10)");
++
++                    b.Property<string>("Make")
++                        .IsRequired()
++                        .HasMaxLength(20)
++                        .HasColumnType("nvarchar(20)");
++
++                    b.Property<string>("Model")
++                        .IsRequired()
++                        .HasMaxLength(30)
++                        .HasColumnType("nvarchar(30)");
++
++                    b.Property<string>("PictureUrl")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("PlateNumber")
++                        .IsRequired()
++                        .HasMaxLength(8)
++                        .HasColumnType("nvarchar(8)");
++
++                    b.Property<string>("VinNumber")
++                        .IsRequired()
++                        .HasMaxLength(50)
++                        .HasColumnType("nvarchar(50)");
++
++                    b.Property<int>("Year")
++                        .HasColumnType("int");
++
++                    b.HasKey("Id");
++
++                    b.ToTable("Cars");
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.Repair", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("CarId")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("EndDate")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<decimal>("Price")
++                        .HasColumnType("decimal(15,2)");
++
++                    b.Property<string>("StartDate")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("TypeOfRepair")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(max)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("CarId");
++
++                    b.ToTable("Repairs");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
++                        .WithMany()
++                        .HasForeignKey("RoleId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
++                        .WithMany()
++                        .HasForeignKey("UserId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
++                        .WithMany()
++                        .HasForeignKey("UserId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
++                        .WithMany()
++                        .HasForeignKey("RoleId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
++                        .WithMany()
++                        .HasForeignKey("UserId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
++                        .WithMany()
++                        .HasForeignKey("UserId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.Repair", b =>
++                {
++                    b.HasOne("WebApp.Data.Models.Car", "Car")
++                        .WithMany("Repairs")
++                        .HasForeignKey("CarId")
++                        .OnDelete(DeleteBehavior.Restrict);
++
++                    b.Navigation("Car");
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.Car", b =>
++                {
++                    b.Navigation("Repairs");
++                });
++#pragma warning restore 612, 618
++        }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Data/Migrations/20210710011240_CarRepairTables.cs b/WebAppDEMO/WebApp/Data/Migrations/20210710011240_CarRepairTables.cs
+new file mode 100644
+index 0000000..9621c19
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Data/Migrations/20210710011240_CarRepairTables.cs
+@@ -0,0 +1,66 @@
++﻿using Microsoft.EntityFrameworkCore.Migrations;
++
++namespace WebApp.Data.Migrations
++{
++    public partial class CarRepairTables : Migration
++    {
++        protected override void Up(MigrationBuilder migrationBuilder)
++        {
++            migrationBuilder.CreateTable(
++                name: "Cars",
++                columns: table => new
++                {
++                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
++                    Make = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
++                    Model = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
++                    Year = table.Column<int>(type: "int", nullable: false),
++                    Color = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
++                    PlateNumber = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
++                    Fuel = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
++                    VinNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
++                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
++                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
++                },
++                constraints: table =>
++                {
++                    table.PrimaryKey("PK_Cars", x => x.Id);
++                });
++
++            migrationBuilder.CreateTable(
++                name: "Repairs",
++                columns: table => new
++                {
++                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
++                    TypeOfRepair = table.Column<string>(type: "nvarchar(max)", nullable: false),
++                    Price = table.Column<decimal>(type: "decimal(15,2)", nullable: false),
++                    StartDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
++                    EndDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
++                    CarId = table.Column<string>(type: "nvarchar(450)", nullable: true)
++                },
++                constraints: table =>
++                {
++                    table.PrimaryKey("PK_Repairs", x => x.Id);
++                    table.ForeignKey(
++                        name: "FK_Repairs_Cars_CarId",
++                        column: x => x.CarId,
++                        principalTable: "Cars",
++                        principalColumn: "Id",
++                        onDelete: ReferentialAction.Restrict);
++                });
++
++            migrationBuilder.CreateIndex(
++                name: "IX_Repairs_CarId",
++                table: "Repairs",
++                column: "CarId");
++        }
++
++        protected override void Down(MigrationBuilder migrationBuilder)
++        {
++            migrationBuilder.DropTable(
++                name: "Repairs");
++
++            migrationBuilder.DropTable(
++                name: "Cars");
++        }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Data/Migrations/20210713001330_AddFuelTypeTable.Designer.cs b/WebAppDEMO/WebApp/Data/Migrations/20210713001330_AddFuelTypeTable.Designer.cs
+new file mode 100644
+index 0000000..43f712b
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Data/Migrations/20210713001330_AddFuelTypeTable.Designer.cs
+@@ -0,0 +1,397 @@
++﻿// <auto-generated />
++using System;
++using Microsoft.EntityFrameworkCore;
++using Microsoft.EntityFrameworkCore.Infrastructure;
++using Microsoft.EntityFrameworkCore.Metadata;
++using Microsoft.EntityFrameworkCore.Migrations;
++using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
++using WebApp.Data;
++
++namespace WebApp.Data.Migrations
++{
++    [DbContext(typeof(CarRepairDbContext))]
++    [Migration("20210713001330_AddFuelTypeTable")]
++    partial class AddFuelTypeTable
++    {
++        protected override void BuildTargetModel(ModelBuilder modelBuilder)
++        {
++#pragma warning disable 612, 618
++            modelBuilder
++                .HasAnnotation("Relational:MaxIdentifierLength", 128)
++                .HasAnnotation("ProductVersion", "5.0.6")
++                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("ConcurrencyStamp")
++                        .IsConcurrencyToken()
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("Name")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.Property<string>("NormalizedName")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("NormalizedName")
++                        .IsUnique()
++                        .HasDatabaseName("RoleNameIndex")
++                        .HasFilter("[NormalizedName] IS NOT NULL");
++
++                    b.ToTable("AspNetRoles");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
++                {
++                    b.Property<int>("Id")
++                        .ValueGeneratedOnAdd()
++                        .HasColumnType("int")
++                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
++
++                    b.Property<string>("ClaimType")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("ClaimValue")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("RoleId")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(450)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("RoleId");
++
++                    b.ToTable("AspNetRoleClaims");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<int>("AccessFailedCount")
++                        .HasColumnType("int");
++
++                    b.Property<string>("ConcurrencyStamp")
++                        .IsConcurrencyToken()
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("Email")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.Property<bool>("EmailConfirmed")
++                        .HasColumnType("bit");
++
++                    b.Property<bool>("LockoutEnabled")
++                        .HasColumnType("bit");
++
++                    b.Property<DateTimeOffset?>("LockoutEnd")
++                        .HasColumnType("datetimeoffset");
++
++                    b.Property<string>("NormalizedEmail")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.Property<string>("NormalizedUserName")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.Property<string>("PasswordHash")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("PhoneNumber")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<bool>("PhoneNumberConfirmed")
++                        .HasColumnType("bit");
++
++                    b.Property<string>("SecurityStamp")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<bool>("TwoFactorEnabled")
++                        .HasColumnType("bit");
++
++                    b.Property<string>("UserName")
++                        .HasMaxLength(256)
++                        .HasColumnType("nvarchar(256)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("NormalizedEmail")
++                        .HasDatabaseName("EmailIndex");
++
++                    b.HasIndex("NormalizedUserName")
++                        .IsUnique()
++                        .HasDatabaseName("UserNameIndex")
++                        .HasFilter("[NormalizedUserName] IS NOT NULL");
++
++                    b.ToTable("AspNetUsers");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
++                {
++                    b.Property<int>("Id")
++                        .ValueGeneratedOnAdd()
++                        .HasColumnType("int")
++                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
++
++                    b.Property<string>("ClaimType")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("ClaimValue")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("UserId")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(450)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("UserId");
++
++                    b.ToTable("AspNetUserClaims");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
++                {
++                    b.Property<string>("LoginProvider")
++                        .HasMaxLength(128)
++                        .HasColumnType("nvarchar(128)");
++
++                    b.Property<string>("ProviderKey")
++                        .HasMaxLength(128)
++                        .HasColumnType("nvarchar(128)");
++
++                    b.Property<string>("ProviderDisplayName")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("UserId")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(450)");
++
++                    b.HasKey("LoginProvider", "ProviderKey");
++
++                    b.HasIndex("UserId");
++
++                    b.ToTable("AspNetUserLogins");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
++                {
++                    b.Property<string>("UserId")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("RoleId")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.HasKey("UserId", "RoleId");
++
++                    b.HasIndex("RoleId");
++
++                    b.ToTable("AspNetUserRoles");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
++                {
++                    b.Property<string>("UserId")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("LoginProvider")
++                        .HasMaxLength(128)
++                        .HasColumnType("nvarchar(128)");
++
++                    b.Property<string>("Name")
++                        .HasMaxLength(128)
++                        .HasColumnType("nvarchar(128)");
++
++                    b.Property<string>("Value")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.HasKey("UserId", "LoginProvider", "Name");
++
++                    b.ToTable("AspNetUserTokens");
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.Car", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("Color")
++                        .HasMaxLength(10)
++                        .HasColumnType("nvarchar(10)");
++
++                    b.Property<string>("Description")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("FuelTypeId")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("Make")
++                        .IsRequired()
++                        .HasMaxLength(20)
++                        .HasColumnType("nvarchar(20)");
++
++                    b.Property<string>("Model")
++                        .IsRequired()
++                        .HasMaxLength(30)
++                        .HasColumnType("nvarchar(30)");
++
++                    b.Property<string>("PictureUrl")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("PlateNumber")
++                        .IsRequired()
++                        .HasMaxLength(8)
++                        .HasColumnType("nvarchar(8)");
++
++                    b.Property<string>("VinNumber")
++                        .IsRequired()
++                        .HasMaxLength(50)
++                        .HasColumnType("nvarchar(50)");
++
++                    b.Property<int>("Year")
++                        .HasColumnType("int");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("FuelTypeId");
++
++                    b.ToTable("Cars");
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.FuelType", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("Name")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.HasKey("Id");
++
++                    b.ToTable("FuelTypes");
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.Repair", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("CarId")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("EndDate")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<decimal>("Price")
++                        .HasColumnType("decimal(15,2)");
++
++                    b.Property<string>("StartDate")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.Property<string>("TypeOfRepair")
++                        .IsRequired()
++                        .HasColumnType("nvarchar(max)");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("CarId");
++
++                    b.ToTable("Repairs");
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
++                        .WithMany()
++                        .HasForeignKey("RoleId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
++                        .WithMany()
++                        .HasForeignKey("UserId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
++                        .WithMany()
++                        .HasForeignKey("UserId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
++                        .WithMany()
++                        .HasForeignKey("RoleId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
++                        .WithMany()
++                        .HasForeignKey("UserId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
++                {
++                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
++                        .WithMany()
++                        .HasForeignKey("UserId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.Car", b =>
++                {
++                    b.HasOne("WebApp.Data.Models.FuelType", "FuelType")
++                        .WithMany("Cars")
++                        .HasForeignKey("FuelTypeId")
++                        .OnDelete(DeleteBehavior.Restrict);
++
++                    b.Navigation("FuelType");
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.Repair", b =>
++                {
++                    b.HasOne("WebApp.Data.Models.Car", "Car")
++                        .WithMany("Repairs")
++                        .HasForeignKey("CarId")
++                        .OnDelete(DeleteBehavior.Restrict);
++
++                    b.Navigation("Car");
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.Car", b =>
++                {
++                    b.Navigation("Repairs");
++                });
++
++            modelBuilder.Entity("WebApp.Data.Models.FuelType", b =>
++                {
++                    b.Navigation("Cars");
++                });
++#pragma warning restore 612, 618
++        }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Data/Migrations/20210713001330_AddFuelTypeTable.cs b/WebAppDEMO/WebApp/Data/Migrations/20210713001330_AddFuelTypeTable.cs
+new file mode 100644
+index 0000000..021b566
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Data/Migrations/20210713001330_AddFuelTypeTable.cs
+@@ -0,0 +1,71 @@
++﻿using Microsoft.EntityFrameworkCore.Migrations;
++
++namespace WebApp.Data.Migrations
++{
++    public partial class AddFuelTypeTable : Migration
++    {
++        protected override void Up(MigrationBuilder migrationBuilder)
++        {
++            migrationBuilder.DropColumn(
++                name: "Fuel",
++                table: "Cars");
++
++            migrationBuilder.AddColumn<string>(
++                name: "FuelTypeId",
++                table: "Cars",
++                type: "nvarchar(450)",
++                nullable: true);
++
++            migrationBuilder.CreateTable(
++                name: "FuelTypes",
++                columns: table => new
++                {
++                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
++                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
++                },
++                constraints: table =>
++                {
++                    table.PrimaryKey("PK_FuelTypes", x => x.Id);
++                });
++
++            migrationBuilder.CreateIndex(
++                name: "IX_Cars_FuelTypeId",
++                table: "Cars",
++                column: "FuelTypeId");
++
++            migrationBuilder.AddForeignKey(
++                name: "FK_Cars_FuelTypes_FuelTypeId",
++                table: "Cars",
++                column: "FuelTypeId",
++                principalTable: "FuelTypes",
++                principalColumn: "Id",
++                onDelete: ReferentialAction.Restrict);
++        }
++
++        protected override void Down(MigrationBuilder migrationBuilder)
++        {
++            migrationBuilder.DropForeignKey(
++                name: "FK_Cars_FuelTypes_FuelTypeId",
++                table: "Cars");
++
++            migrationBuilder.DropTable(
++                name: "FuelTypes");
++
++            migrationBuilder.DropIndex(
++                name: "IX_Cars_FuelTypeId",
++                table: "Cars");
++
++            migrationBuilder.DropColumn(
++                name: "FuelTypeId",
++                table: "Cars");
++
++            migrationBuilder.AddColumn<string>(
++                name: "Fuel",
++                table: "Cars",
++                type: "nvarchar(10)",
++                maxLength: 10,
++                nullable: false,
++                defaultValue: "");
++        }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Data/Migrations/ApplicationDbContextModelSnapshot.cs b/WebAppDEMO/WebApp/Data/Migrations/ApplicationDbContextModelSnapshot.cs
+index 46e528f..6232d45 100644
+--- a/WebAppDEMO/WebApp/Data/Migrations/ApplicationDbContextModelSnapshot.cs
++++ b/WebAppDEMO/WebApp/Data/Migrations/ApplicationDbContextModelSnapshot.cs
+@@ -231,10 +231,8 @@ namespace WebApp.Data.Migrations
+                     b.Property<string>("Description")
+                         .HasColumnType("nvarchar(max)");
+ 
+-                    b.Property<string>("Fuel")
+-                        .IsRequired()
+-                        .HasMaxLength(10)
+-                        .HasColumnType("nvarchar(10)");
++                    b.Property<string>("FuelTypeId")
++                        .HasColumnType("nvarchar(450)");
+ 
+                     b.Property<string>("Make")
+                         .IsRequired()
+@@ -265,9 +263,24 @@ namespace WebApp.Data.Migrations
+ 
+                     b.HasKey("Id");
+ 
++                    b.HasIndex("FuelTypeId");
++
+                     b.ToTable("Cars");
+                 });
+ 
++            modelBuilder.Entity("WebApp.Data.Models.FuelType", b =>
++                {
++                    b.Property<string>("Id")
++                        .HasColumnType("nvarchar(450)");
++
++                    b.Property<string>("Name")
++                        .HasColumnType("nvarchar(max)");
++
++                    b.HasKey("Id");
++
++                    b.ToTable("FuelTypes");
++                });
++
+             modelBuilder.Entity("WebApp.Data.Models.Repair", b =>
+                 {
+                     b.Property<string>("Id")
+@@ -347,6 +360,16 @@ namespace WebApp.Data.Migrations
+                         .IsRequired();
+                 });
+ 
++            modelBuilder.Entity("WebApp.Data.Models.Car", b =>
++                {
++                    b.HasOne("WebApp.Data.Models.FuelType", "FuelType")
++                        .WithMany("Cars")
++                        .HasForeignKey("FuelTypeId")
++                        .OnDelete(DeleteBehavior.Restrict);
++
++                    b.Navigation("FuelType");
++                });
++
+             modelBuilder.Entity("WebApp.Data.Models.Repair", b =>
+                 {
+                     b.HasOne("WebApp.Data.Models.Car", "Car")
+@@ -361,6 +384,11 @@ namespace WebApp.Data.Migrations
+                 {
+                     b.Navigation("Repairs");
+                 });
++
++            modelBuilder.Entity("WebApp.Data.Models.FuelType", b =>
++                {
++                    b.Navigation("Cars");
++                });
+ #pragma warning restore 612, 618
+         }
+     }
+diff --git a/WebAppDEMO/WebApp/Data/Models/Car.cs b/WebAppDEMO/WebApp/Data/Models/Car.cs
+new file mode 100644
+index 0000000..4618932
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Data/Models/Car.cs
+@@ -0,0 +1,53 @@
++﻿using System;
++using System.Collections.Generic;
++using System.ComponentModel.DataAnnotations;
++using System.Linq;
++using System.Threading.Tasks;
++using static WebApp.Data.DataConstants;
++
++namespace WebApp.Data.Models
++{
++
++    public class Car
++    {
++        [Key]
++        [Required]
++        public string Id { get; init; } = Guid.NewGuid().ToString();
++
++        [Required]
++        [MaxLength(CarMakeMaxLength)]
++        public string Make { get; set; }
++
++        [Required]
++        [MaxLength(CarModelMaxLength)]
++        public string Model { get; set; }
++
++        [Range(CarYearMinValue, 2100)]
++        public int Year { get; set; }
++
++        [MaxLength(CarColorMaxLength)]
++        public string Color { get; set; }
++
++        [Required]
++        [MaxLength(CarPlateNumberMaxLength)]
++        public string PlateNumber { get; set; }
++
++        [Required]
++        [MaxLength(CarVinNumberMaxLength)]
++        public string VinNumber { get; set; }
++
++        [Required]
++        public string PictureUrl { get; set; }
++
++        public string Description { get; set; }
++
++        public string FuelTypeId { get; set; }
++        public FuelType FuelType { get; set; }
++
++        //  public string OwnerId { get; set; }
++
++        //    public User Owner { get; set; }
++
++        public IEnumerable<Repair> Repairs { get; set; } = new List<Repair>();
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Data/Models/FuelType.cs b/WebAppDEMO/WebApp/Data/Models/FuelType.cs
+new file mode 100644
+index 0000000..d7ae51f
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Data/Models/FuelType.cs
+@@ -0,0 +1,18 @@
++﻿using System;
++using System.Collections.Generic;
++using System.ComponentModel.DataAnnotations;
++using System.Linq;
++using System.Threading.Tasks;
++
++namespace WebApp.Data.Models
++{
++    public class FuelType
++    {
++        [Key]
++        [Required]
++        public string Id { get; init; } = Guid.NewGuid().ToString();
++        public string Name { get; set; }
++
++        public IEnumerable<Car> Cars { get; set; } = new List<Car>();
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Data/Models/Repair.cs b/WebAppDEMO/WebApp/Data/Models/Repair.cs
+new file mode 100644
+index 0000000..3d87f85
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Data/Models/Repair.cs
+@@ -0,0 +1,32 @@
++﻿using System;
++using System.Collections.Generic;
++using System.ComponentModel.DataAnnotations;
++using System.ComponentModel.DataAnnotations.Schema;
++using System.Linq;
++using System.Runtime.CompilerServices;
++using System.Threading.Tasks;
++
++namespace WebApp.Data.Models
++{
++    public class Repair
++    {
++        [Key]
++        [Required]
++        public string Id { get; init; } = Guid.NewGuid().ToString();
++
++        [Required]
++        public string TypeOfRepair { get; set; }
++
++        [Column(TypeName = "decimal(15,2)")]
++        public decimal Price { get; set; }
++
++        // [MaxLength(CarModelMaxLength)]
++        public string StartDate { get; set; }
++
++        // [MaxLength(CarModelMaxLength)]
++        public string EndDate { get; set; }
++
++        public string CarId { get; set; }
++        public  Car Car { get; init; }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Infrastructure/ApplicationBuilderExtensions.cs b/WebAppDEMO/WebApp/Infrastructure/ApplicationBuilderExtensions.cs
+new file mode 100644
+index 0000000..9258b7d
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Infrastructure/ApplicationBuilderExtensions.cs
+@@ -0,0 +1,65 @@
++﻿using System;
++using System.Collections.Generic;
++using System.Linq;
++using System.Threading.Tasks;
++using Microsoft.AspNetCore.Builder;
++using Microsoft.EntityFrameworkCore;
++using Microsoft.Extensions.DependencyInjection;
++using WebApp.Data;
++using WebApp.Data.Models;
++
++namespace WebApp.Infrastructure
++{
++    public static class ApplicationBuilderExtensions
++    {
++        public static IApplicationBuilder PrepareDatabase(
++          this IApplicationBuilder app)
++        {
++            using var scopedServices = app.ApplicationServices.CreateScope();
++            var data = scopedServices.ServiceProvider.GetService<CarRepairDbContext>();
++
++            data.Database.Migrate();
++
++            SeedRepairs(data);
++            SeedFuels(data);
++            return app;
++        }
++
++        private static void SeedRepairs(CarRepairDbContext data)
++        {
++            if (data.Repairs.Any())
++            {
++                return;
++            }
++
++            data.Repairs.AddRange(new[]
++            {
++                new Repair {TypeOfRepair = "Replacement Of Consumables"},
++                new Repair {TypeOfRepair = "Repair"},
++            });
++
++            data.SaveChanges();
++        }
++        private static void SeedFuels(CarRepairDbContext data) 
++        {
++            if (data.FuelTypes.Any())
++            {
++                return;
++            }
++
++            data.FuelTypes.AddRange(new[]
++            {
++                new FuelType {Name = "PETROL"},
++                new FuelType {Name = "DIESEL"},
++                new FuelType {Name = "GAS"},
++                new FuelType {Name = "METHANE"},
++                new FuelType {Name = "ELECTRIC"},
++                new FuelType {Name = "HYBRID"},
++                new FuelType {Name = "METHANE"},
++            });
++
++            data.SaveChanges();
++        }
++     
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Models/Cars/CreateCarFormModel.cs b/WebAppDEMO/WebApp/Models/Cars/CreateCarFormModel.cs
+new file mode 100644
+index 0000000..2b32ef9
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Models/Cars/CreateCarFormModel.cs
+@@ -0,0 +1,34 @@
++﻿using System;
++using System.Collections.Generic;
++using System.ComponentModel.DataAnnotations;
++using System.Linq;
++using System.Threading.Tasks;
++using WebApp.Data.Models;
++
++namespace WebApp.Models.Cars
++{
++    public class CreateCarFormModel
++    {
++        
++        public string Make { get; set; }
++
++        public string Model { get; set; }
++
++        public int Year { get; set; }
++        
++        public string Color { get; set; }
++        
++        public string PlateNumber { get; set; }
++        
++     //   public string FuelType { get; set; }
++        
++        public string VinNumber { get; set; }
++        
++        public string PictureUrl { get; set; }
++
++        public string Description { get; set; }
++        [Display (Name = "FuelType")]
++        public string FuelTypeId { get; set; }
++        public IEnumerable<FuelTypeViewModel> FuelTypes { get; set; }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Models/Cars/FuelTypeViewModel.cs b/WebAppDEMO/WebApp/Models/Cars/FuelTypeViewModel.cs
+new file mode 100644
+index 0000000..e4723ee
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Models/Cars/FuelTypeViewModel.cs
+@@ -0,0 +1,13 @@
++﻿using System;
++using System.Collections.Generic;
++using System.Linq;
++using System.Threading.Tasks;
++
++namespace WebApp.Models.Cars
++{
++    public class FuelTypeViewModel
++    {
++        public string Id { get; set; }
++        public string Name { get; set; }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Models/Repairs/AddRepairFormModel.cs b/WebAppDEMO/WebApp/Models/Repairs/AddRepairFormModel.cs
+new file mode 100644
+index 0000000..314a9b2
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Models/Repairs/AddRepairFormModel.cs
+@@ -0,0 +1,18 @@
++﻿using System;
++using System.Collections.Generic;
++using System.Linq;
++using System.Threading.Tasks;
++
++namespace WebApp.Models.Repairs
++{
++    public class AddRepairFormModel
++    {  
++        public string TypeOfRepair { get; set; }
++        
++        public decimal Price { get; set; }
++        
++        public string StartDate { get; set; }
++        
++        public string EndDate { get; set; }
++    }
++}
+diff --git a/WebAppDEMO/WebApp/Views/Cars/Create.cshtml b/WebAppDEMO/WebApp/Views/Cars/Create.cshtml
+new file mode 100644
+index 0000000..08a78dc
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Cars/Create.cshtml
+@@ -0,0 +1,116 @@
++﻿@model CreateCarFormModel
++
++@{
++    ViewData["Title"] = "Create";
++}
++
++<div class="container">
++    <h2 class="text-center">Добави Автомобил</h2>
++</div>
++<hr />
++<div class="container">
++    <div class="row justify-content-center">
++        <div class="col-md-9 ">
++            <form asp-action="Create">
++                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
++
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="Make" class="form-control" placeholder="Марка">
++                    <span asp-validation-for="Make" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="Model" class="form-control" placeholder="Модел">
++                    <span asp-validation-for="Model" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="Year" class="form-control" placeholder="Година">
++                    <span asp-validation-for="Year" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="Color" class="form-control" placeholder="Цвят">
++                    <span asp-validation-for="Color" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="PlateNumber" class="form-control" placeholder="Рег.Номер">
++                    <span asp-validation-for="PlateNumber" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="VinNumber" class="form-control" placeholder="Рама Номер">
++                    <span asp-validation-for="VinNumber" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                  @*  <input for="FuelType" asp-for="Fuel" class="form-control" placeholder="Вид Гориво">*@
++                    <select asp-for="FuelTypeId" class="form-control" >
++                        <option value="" disabled selected hidden >Вид Гориво</option>
++                        @foreach (var item in Model.FuelTypes)
++                        {
++                            <option value="@item.Id">@item.Name</option>
++                        }
++                    </select>
++                    <span asp-validation-for="FuelTypes" class="text-danger"></span>
++                    </div>
++               
++                
++                
++                
++
++
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="PictureUrl" class="form-control" placeholder="Снимка">
++                    <span asp-validation-for="PictureUrl" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"><i class="fas fa-key"></i></span>
++                    </div>
++
++                    <input asp-for="Description" class="form-control" style="height: auto" placeholder="Бележка" />
++                    <span asp-validation-for="Description" class="text-danger"></span>
++                </div>
++
++                @*<div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"><i class="fas fa-key"></i></span>
++                    </div>
++                        <textarea asp-for="Description" style="height: auto; width: 94%; resize: none;" placeholder="Бележка"></textarea>
++                        <span asp-validation-for="Description" class="text-danger"></span>
++                    </div>*@
++
++
++                <div class="float-right">
++                    <input type="submit" value="Create" class="btn btn-warning" />
++                </div>
++            </form>
++        </div>
++    </div>
++
++    <div>
++        <a class="float-right" asp-action="Index">Back to List</a>
++    </div>
++
++
++</div>
+diff --git a/WebAppDEMO/WebApp/Views/Cars/Delete.cshtml b/WebAppDEMO/WebApp/Views/Cars/Delete.cshtml
+new file mode 100644
+index 0000000..1fecc26
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Cars/Delete.cshtml
+@@ -0,0 +1,82 @@
++﻿@model WebApp.Data.Models.Car
++
++@{
++    ViewData["Title"] = "Delete";
++}
++
++<div class="container">
++    <h2 class="text-black-50">Are you sure you want to delete this Car?</h2>
++</div>
++
++    <hr />
++    <div class="container">
++        <div class="row justify-content-center">
++
++            <dl class="row">
++                <dt class="col-sm-2">
++                    @Html.DisplayNameFor(model => model.Make)
++                </dt>
++                <dd class="col-sm-10">
++                    @Html.DisplayFor(model => model.Make)
++                </dd>
++                <dt class="col-sm-2">
++                    @Html.DisplayNameFor(model => model.Model)
++                </dt>
++                <dd class="col-sm-10">
++                    @Html.DisplayFor(model => model.Model)
++                </dd>
++                <dt class="col-sm-2">
++                    @Html.DisplayNameFor(model => model.Year)
++                </dt>
++                <dd class="col-sm-10">
++                    @Html.DisplayFor(model => model.Year)
++                </dd>
++                <dt class="col-sm-2">
++                    @Html.DisplayNameFor(model => model.Color)
++                </dt>
++                <dd class="col-sm-10">
++                    @Html.DisplayFor(model => model.Color)
++                </dd>
++                <dt class="col-sm-2">
++                    @Html.DisplayNameFor(model => model.PlateNumber)
++                </dt>
++                <dd class="col-sm-10">
++                    @Html.DisplayFor(model => model.PlateNumber)
++                </dd>
++                <dt class="col-sm-2">
++                    @Html.DisplayNameFor(model => model.FuelType)
++                </dt>
++                <dd class="col-sm-10">
++                    @Html.DisplayFor(model => model.FuelType)
++                </dd>
++                <dt class="col-sm-2">
++                    @Html.DisplayNameFor(model => model.VinNumber)
++                </dt>
++                <dd class="col-sm-10">
++                    @Html.DisplayFor(model => model.VinNumber)
++                </dd>
++                <dt class="col-sm-2">
++                    @Html.DisplayNameFor(model => model.PictureUrl)
++                </dt>
++                <dd class="col-sm-10">
++                    @Html.DisplayFor(model => model.PictureUrl)
++                </dd>
++                <dt class="col-sm-2">
++                    @Html.DisplayNameFor(model => model.Description)
++                </dt>
++                <dd class="col-sm-10">
++                    @Html.DisplayFor(model => model.Description)
++                </dd>
++            </dl>
++
++
++        </div> 
++        <form  asp-action="Delete">
++            <input type="hidden" asp-for="Id" />
++            <input type="submit" value="Delete" class="btn btn-danger" />
++        </form>
++        <div>
++            <a class="float-right" asp-action="Details" asp-route-id="@Model.Id" >Back to List</a>
++        </div>
++    </div>
++   
+diff --git a/WebAppDEMO/WebApp/Views/Cars/Details.cshtml b/WebAppDEMO/WebApp/Views/Cars/Details.cshtml
+new file mode 100644
+index 0000000..5dbec45
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Cars/Details.cshtml
+@@ -0,0 +1,85 @@
++﻿@model WebApp.Data.Models.Car
++
++@{
++    ViewData["Title"] = "Details";
++}
++
++
++<div class="container">
++    <div>
++        <h2 class="text-center">Детайли за Автомобила</h2>
++    </div>
++    <img src="@Html.DisplayFor(model=>model.PictureUrl)"/> 
++    <hr />
++    <dl class="row">
++        <dt class="col-sm-2">
++            @Html.DisplayNameFor(model => model.Make)
++        </dt>
++        <dd class="col-sm-10">
++            @Html.DisplayFor(model => model.Make)
++        </dd>
++        <dt class="col-sm-2">
++            @Html.DisplayNameFor(model => model.Model)
++        </dt>
++        <dd class="col-sm-10">
++            @Html.DisplayFor(model => model.Model)
++        </dd>
++        <dt class="col-sm-2">
++            @Html.DisplayNameFor(model => model.Year)
++        </dt>
++        <dd class="col-sm-10">
++            @Html.DisplayFor(model => model.Year)
++        </dd>
++        <dt class="col-sm-2">
++            @Html.DisplayNameFor(model => model.Color)
++        </dt>
++        <dd class="col-sm-10">
++            @Html.DisplayFor(model => model.Color)
++        </dd>
++        <dt class="col-sm-2">
++            @Html.DisplayNameFor(model => model.PlateNumber)
++        </dt>
++        <dd class="col-sm-10">
++            @Html.DisplayFor(model => model.PlateNumber)
++        </dd>
++        <dt class="col-sm-2">
++            @Html.DisplayNameFor(model => model.FuelType)
++        </dt>
++        <dd class="col-sm-10">
++            @Html.DisplayFor(model => model.FuelType)
++        </dd>
++        <dt class="col-sm-2">
++            @Html.DisplayNameFor(model => model.VinNumber)
++        </dt>
++        <dd class="col-sm-10">
++            @Html.DisplayFor(model => model.VinNumber)
++        </dd>
++        <dt class="col-sm-2">
++            @Html.DisplayNameFor(model => model.PictureUrl)
++        </dt>
++        <dd class="col-sm-10">
++            @Html.DisplayFor(model => model.PictureUrl)
++        </dd>
++        <dt class="col-sm-2">
++            @Html.DisplayNameFor(model => model.Description)
++        </dt>
++        <dd class="col-sm-10">
++            @Html.DisplayFor(model => model.Description)
++        </dd>
++
++    </dl>
++
++
++    <div >
++        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
++        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
++        <a class="btn btn-info" asp-action="Repairs" asp-route-id="@Model.Id">Repairs</a>
++    </div>
++
++    <div>
++        <a class="float-right" asp-action="Index">Back to List</a>
++    </div>
++
++
++</div>
++
+diff --git a/WebAppDEMO/WebApp/Views/Cars/Edit.cshtml b/WebAppDEMO/WebApp/Views/Cars/Edit.cshtml
+new file mode 100644
+index 0000000..8636d6c
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Cars/Edit.cshtml
+@@ -0,0 +1,94 @@
++﻿@model WebApp.Data.Models.Car
++
++@{
++    ViewData["Title"] = "Edit";
++}
++
++<div class="container">
++    <h2 class="text-center">Редактирай Автомобил</h2>
++</div>
++<hr />
++<div class="container">
++    <div class="row justify-content-center">
++        <div class="col-md-9">
++            <form asp-action="Edit">
++                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
++                <input type="hidden" asp-for="Id" />
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="Make" class="form-control" placeholder="Марка">
++                    <span asp-validation-for="Make" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="Model" class="form-control" placeholder="Модел">
++                    <span asp-validation-for="Model" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="Year" class="form-control" placeholder="Година">
++                    <span asp-validation-for="Year" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="Color" class="form-control" placeholder="Цвят">
++                    <span asp-validation-for="Color" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="PlateNumber" class="form-control" placeholder="Рег.Номер">
++                    <span asp-validation-for="PlateNumber" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="VinNumber" class="form-control" placeholder="Рама Номер">
++                    <span asp-validation-for="VinNumber" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="FuelType" class="form-control" placeholder="Вид Гориво">
++                    <span asp-validation-for="FuelType" class="text-danger"></span>
++                </div>
++
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"></span>
++                    </div>
++                    <input asp-for="PictureUrl" class="form-control" placeholder="Снимка">
++                    <span asp-validation-for="PictureUrl" class="text-danger"></span>
++                </div>
++                <div class="input-group form-group">
++                    <div class="input-group-prepend">
++                        <span class="input-group-text"><i class="fas fa-key"></i></span>
++                    </div>
++
++                    <input asp-for="Description" class="form-control" style="height: auto" placeholder="Бележка" />
++                    <span asp-validation-for="Description" class="text-danger"></span>
++                </div>
++                <div class="float-right">
++                    <input type="submit" value="Save" class="btn btn-warning" />
++                </div>
++
++            </form>
++        </div>
++
++    </div>
++    <div>
++        <a class="float-right" asp-action="Index">Back to List</a>
++    </div>
++
++</div>
+\ No newline at end of file
+diff --git a/WebAppDEMO/WebApp/Views/Cars/Index.cshtml b/WebAppDEMO/WebApp/Views/Cars/Index.cshtml
+new file mode 100644
+index 0000000..93ec8f8
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Cars/Index.cshtml
+@@ -0,0 +1,114 @@
++﻿@model IEnumerable<WebApp.Data.Models.Car>
++
++@{
++    ViewData["Title"] = "Index";
++}
++<div class="container">
++    <h2 class="text-center">Моите Автомобили</h2>
++    <div class="align-content-xl-end">
++        <p>
++            <a class="btn btn-warning" asp-action="Create">Добави Автомобил...</a>
++        </p>
++    </div>
++</div>
++
++<hr />
++
++<div class="page-header3" style="margin-top: 5%; margin-bottom: 5%;">
++    
++    @foreach (var item in Model)
++    {
++    
++        <div class="added-destinations" >
++            <a asp-action="Details" asp-route-id="@item.Id" class="added-destination">
++                <img src="@item.PictureUrl"
++                     alt="" class="picture-added-destination">
++                <h3>@item.PlateNumber</h3>
++                <span>@item.Make @item.Model </span> <span>@item.Year</span>
++            </a>
++
++        </div>
++      
++        @*<div class="guest">
++                No destinations possible! Please sign in...
++            </div>*@
++    }
++</div>
++
++
++
++
++
++@*<table class="table">
++        <thead>
++            <tr>
++                <th>
++                    @Html.DisplayNameFor(model => model.Make)
++                </th>
++                <th>
++                    @Html.DisplayNameFor(model => model.Model)
++                </th>
++                <th>
++                    @Html.DisplayNameFor(model => model.Year)
++                </th>
++                <th>
++                    @Html.DisplayNameFor(model => model.Color)
++                </th>
++                <th>
++                    @Html.DisplayNameFor(model => model.PlateNumber)
++                </th>
++                <th>
++                    @Html.DisplayNameFor(model => model.Fuel)
++                </th>
++                <th>
++                    @Html.DisplayNameFor(model => model.VinNumber)
++                </th>
++                <th>
++                        @Html.DisplayNameFor(model => model.PictureUrl)
++                    </th>
++                <th>
++                    @Html.DisplayNameFor(model => model.Description)
++                </th>
++                <th></th>
++            </tr>
++        </thead>
++        <tbody>
++            @foreach (var item in Model)
++            {
++                <tr>
++                    <td>
++                        @Html.DisplayFor(modelItem => item.Make)
++                    </td>
++                    <td>
++                        @Html.DisplayFor(modelItem => item.Model)
++                    </td>
++                    <td>
++                        @Html.DisplayFor(modelItem => item.Year)
++                    </td>
++                    <td>
++                        @Html.DisplayFor(modelItem => item.Color)
++                    </td>
++                    <td>
++                        @Html.DisplayFor(modelItem => item.PlateNumber)
++                    </td>
++                    <td>
++                        @Html.DisplayFor(modelItem => item.Fuel)
++                    </td>
++                    <td>
++                        @Html.DisplayFor(modelItem => item.VinNumber)
++                    </td>
++                    <td>
++                            @Html.DisplayFor(modelItem => item.PictureUrl)
++                        </td>
++                    <td>
++                        @Html.DisplayFor(modelItem => item.Description)
++                    </td>
++                    <td>
++                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
++                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
++                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
++                    </td>
++                </tr>
++            }
++        </tbody>
++    </table>*@
+diff --git a/WebAppDEMO/WebApp/Views/Home/Contacts.cshtml b/WebAppDEMO/WebApp/Views/Home/Contacts.cshtml
+new file mode 100644
+index 0000000..8c93edc
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Home/Contacts.cshtml
+@@ -0,0 +1,32 @@
++﻿@{
++    ViewData["Title"] = "Контакти";
++}
++<div style="margin-top: 0%; margin-bottom: 2%;" class="page-header2">
++
++    <div>
++        <iframe src="https://maps.google.com/maps?q=%D0%BC%D0%B0%D1%80%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D0%B7&t=&z=17&ie=UTF8&iwloc=&output=embed"
++                height="350" frameborder="0">
++        </iframe>
++    </div>
++    <div class="container">
++        <div class="page-caption1">
++            <div>
++                <h1> Адрес: </h1>
++                <p>бул. „Никола Мушанов“ 149 1373 Sofia</p>
++                <h1> Телефон: </h1>
++                <p>+359 88 228 3837</p>
++
++            </div>
++            <div>
++
++                <h1>E-mail:</h1>
++                <p> office@marserviz.com </p>
++                <h1>Работно време:</h1>
++                <p>понеделник-събота: 10:00 ч. - 19:00 ч.</p>
++            </div>
++            <div class="fb-customerchat" page_id="https://www.facebook.com/messages/t/1826557741">
++            </div>
++        </div>
++
++    </div>
++</div>
+\ No newline at end of file
+diff --git a/WebAppDEMO/WebApp/Views/Home/Services.cshtml b/WebAppDEMO/WebApp/Views/Home/Services.cshtml
+new file mode 100644
+index 0000000..2248b09
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Home/Services.cshtml
+@@ -0,0 +1,28 @@
++﻿@{
++    ViewData["Title"] = "Услуги";
++}
++<div style="margin-top: 0%; margin-bottom: 5%;" class="page-header1">
++    <div class="container">
++        <div class="row">
++            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
++                <div style="margin-top: 8%; width:100%; " class="page-caption1">
++                    <h1 class="page-title">
++                        <ul class="a">
++                            <li>Ремонт и диагностика на всички видове автомобили</li>
++                            <li>Ремонт и обслужване на ходова част, трансмисии и двигатели</li>
++                            <li>Основни и текущи ремонти</li>
++                            <li>Ремонт и обслужване на автоклиматици</li>
++                            <li>Смяна на гуми, масла и филтри</li>
++                            <li>
++                                МАРСЕРВИЗ ЕООД предлага и абонаментна поддръжка на фирмени и лични автомобили
++                                на преференциални цени
++                            </li>
++                        </ul>
++
++                    </h1>
++
++                </div>
++            </div>
++        </div>
++    </div>
++</div>
+\ No newline at end of file
+diff --git a/WebAppDEMO/WebApp/Views/Repairs/Add.cshtml b/WebAppDEMO/WebApp/Views/Repairs/Add.cshtml
+new file mode 100644
+index 0000000..0854131
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Repairs/Add.cshtml
+@@ -0,0 +1,51 @@
++﻿@model AddRepairFormModel
++@{
++    ViewData["Title"] = "Добави Ремонт";
++}
++
++<div class="container" style="margin-top: 5%; margin-bottom: 5%">
++    <div class="d-flex justify-content-center h-100">
++        <div class="card" style="height: auto">
++            <div class="card-header">
++                <h3>Добави Ремонт</h3>
++
++            </div>
++            <div class="card-body">
++                <form method="post">
++
++                    <div class="input-group form-group">
++                        <div class="input-group-prepend">
++                            <span class="input-group-text"><i class="fas fa-user"></i></span>
++                        </div>
++                        <input asp-for="TypeOfRepair" class="form-control" placeholder="...избери тип">
++                    </div>
++
++
++                    <div class="input-group form-group">
++                        <div class="input-group-prepend">
++                            <span class="input-group-text"><i class="fas fa-key"></i></span>
++                        </div>
++                        <input asp-for="Price" class="form-control" placeholder="Цена">
++                    </div>
++
++
++                    <div class="input-group form-group">
++                        <div class="input-group-prepend">
++                            <span class="input-group-text"><i class="fas fa-key"></i></span>
++                        </div>
++                        <input asp-for="StartDate" class="form-control" placeholder="Начална Дата">
++                    </div>
++
++                    <div class="input-group form-group">
++                        <div class="input-group-prepend">
++                            <span class="input-group-text"><i class="fas fa-user"></i></span>
++                        </div>
++                        <input asp-for="EndDate" class="form-control" placeholder="Крайна Дата">
++                    </div>
++                    
++                    <input type="submit" value="Добави" class="btn float-right login_btn">
++                </form>
++            </div>
++        </div>
++    </div>
++</div>
+\ No newline at end of file
+diff --git a/WebAppDEMO/WebApp/Views/Repairs/Create.cshtml b/WebAppDEMO/WebApp/Views/Repairs/Create.cshtml
+new file mode 100644
+index 0000000..d7dd115
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Repairs/Create.cshtml
+@@ -0,0 +1,54 @@
++﻿@model WebApp.Data.Models.Repair
++
++@{
++    ViewData["Title"] = "Create";
++}
++
++<h1>Create</h1>
++
++<h4>Repair</h4>
++<hr />
++<div class="row">
++    <div class="col-md-4">
++        <form asp-action="Create">
++            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
++            <div class="form-group">
++                <label asp-for="Id" class="control-label"></label>
++                <input asp-for="Id" class="form-control" />
++                <span asp-validation-for="Id" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <label asp-for="TypeOfRepair" class="control-label"></label>
++                <input asp-for="TypeOfRepair" class="form-control" />
++                <span asp-validation-for="TypeOfRepair" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <label asp-for="Price" class="control-label"></label>
++                <input asp-for="Price" class="form-control" />
++                <span asp-validation-for="Price" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <label asp-for="StartDate" class="control-label"></label>
++                <input asp-for="StartDate" class="form-control" />
++                <span asp-validation-for="StartDate" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <label asp-for="EndDate" class="control-label"></label>
++                <input asp-for="EndDate" class="form-control" />
++                <span asp-validation-for="EndDate" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <label asp-for="CarId" class="control-label"></label>
++                <select asp-for="CarId" class ="form-control" asp-items="ViewBag.CarId"></select>
++            </div>
++            <div class="form-group">
++                <input type="submit" value="Create" class="btn btn-primary" />
++            </div>
++        </form>
++    </div>
++</div>
++
++<div>
++    <a asp-action="Index">Back to List</a>
++</div>
++
+diff --git a/WebAppDEMO/WebApp/Views/Repairs/Delete.cshtml b/WebAppDEMO/WebApp/Views/Repairs/Delete.cshtml
+new file mode 100644
+index 0000000..16df2ea
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Repairs/Delete.cshtml
+@@ -0,0 +1,51 @@
++﻿@model WebApp.Data.Models.Repair
++
++@{
++    ViewData["Title"] = "Delete";
++}
++
++<h1>Delete</h1>
++
++<h3>Are you sure you want to delete this?</h3>
++<div>
++    <h4>Repair</h4>
++    <hr />
++    <dl class="row">
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.TypeOfRepair)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.TypeOfRepair)
++        </dd>
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.Price)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.Price)
++        </dd>
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.StartDate)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.StartDate)
++        </dd>
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.EndDate)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.EndDate)
++        </dd>
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.Car)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.Car.Id)
++        </dd class>
++    </dl>
++    
++    <form asp-action="Delete">
++        <input type="hidden" asp-for="Id" />
++        <input type="submit" value="Delete" class="btn btn-danger" /> |
++        <a asp-action="Index">Back to List</a>
++    </form>
++</div>
+diff --git a/WebAppDEMO/WebApp/Views/Repairs/Details.cshtml b/WebAppDEMO/WebApp/Views/Repairs/Details.cshtml
+new file mode 100644
+index 0000000..b362a3d
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Repairs/Details.cshtml
+@@ -0,0 +1,48 @@
++﻿@model WebApp.Data.Models.Repair
++
++@{
++    ViewData["Title"] = "Details";
++}
++
++<h1>Details</h1>
++
++<div>
++    <h4>Repair</h4>
++    <hr />
++    <dl class="row">
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.TypeOfRepair)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.TypeOfRepair)
++        </dd>
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.Price)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.Price)
++        </dd>
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.StartDate)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.StartDate)
++        </dd>
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.EndDate)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.EndDate)
++        </dd>
++        <dt class = "col-sm-2">
++            @Html.DisplayNameFor(model => model.Car)
++        </dt>
++        <dd class = "col-sm-10">
++            @Html.DisplayFor(model => model.Car.Id)
++        </dd>
++    </dl>
++</div>
++<div>
++    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
++    <a asp-action="Index">Back to List</a>
++</div>
+diff --git a/WebAppDEMO/WebApp/Views/Repairs/Edit.cshtml b/WebAppDEMO/WebApp/Views/Repairs/Edit.cshtml
+new file mode 100644
+index 0000000..def7731
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Repairs/Edit.cshtml
+@@ -0,0 +1,51 @@
++﻿@model WebApp.Data.Models.Repair
++
++@{
++    ViewData["Title"] = "Edit";
++}
++
++<h1>Edit</h1>
++
++<h4>Repair</h4>
++<hr />
++<div class="row">
++    <div class="col-md-4">
++        <form asp-action="Edit">
++            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
++            <input type="hidden" asp-for="Id" />
++            <div class="form-group">
++                <label asp-for="TypeOfRepair" class="control-label"></label>
++                <input asp-for="TypeOfRepair" class="form-control" />
++                <span asp-validation-for="TypeOfRepair" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <label asp-for="Price" class="control-label"></label>
++                <input asp-for="Price" class="form-control" />
++                <span asp-validation-for="Price" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <label asp-for="StartDate" class="control-label"></label>
++                <input asp-for="StartDate" class="form-control" />
++                <span asp-validation-for="StartDate" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <label asp-for="EndDate" class="control-label"></label>
++                <input asp-for="EndDate" class="form-control" />
++                <span asp-validation-for="EndDate" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <label asp-for="CarId" class="control-label"></label>
++                <select asp-for="CarId" class="form-control" asp-items="ViewBag.CarId"></select>
++                <span asp-validation-for="CarId" class="text-danger"></span>
++            </div>
++            <div class="form-group">
++                <input type="submit" value="Save" class="btn btn-primary" />
++            </div>
++        </form>
++    </div>
++</div>
++
++<div>
++    <a asp-action="Index">Back to List</a>
++</div>
++
+diff --git a/WebAppDEMO/WebApp/Views/Repairs/Index.cshtml b/WebAppDEMO/WebApp/Views/Repairs/Index.cshtml
+new file mode 100644
+index 0000000..c27b039
+--- /dev/null
++++ b/WebAppDEMO/WebApp/Views/Repairs/Index.cshtml
+@@ -0,0 +1,59 @@
++﻿@model IEnumerable<WebApp.Data.Models.Repair>
++
++@{
++    ViewData["Title"] = "Index";
++}
++
++<h1>Index</h1>
++
++<p>
++    <a asp-action="Create">Create New</a>
++</p>
++<table class="table">
++    <thead>
++        <tr>
++            <th>
++                @Html.DisplayNameFor(model => model.TypeOfRepair)
++            </th>
++            <th>
++                @Html.DisplayNameFor(model => model.Price)
++            </th>
++            <th>
++                @Html.DisplayNameFor(model => model.StartDate)
++            </th>
++            <th>
++                @Html.DisplayNameFor(model => model.EndDate)
++            </th>
++            <th>
++                @Html.DisplayNameFor(model => model.Car)
++            </th>
++            <th></th>
++        </tr>
++    </thead>
++    <tbody>
++@foreach (var item in Model) {
++        <tr>
++            <td>
++                @Html.DisplayFor(modelItem => item.TypeOfRepair)
++            </td>
++            <td>
++                @Html.DisplayFor(modelItem => item.Price)
++            </td>
++            <td>
++                @Html.DisplayFor(modelItem => item.StartDate)
++            </td>
++            <td>
++                @Html.DisplayFor(modelItem => item.EndDate)
++            </td>
++            <td>
++                @Html.DisplayFor(modelItem => item.Car.Id)
++            </td>
++            <td>
++                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
++                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
++                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
++            </td>
++        </tr>
++}
++    </tbody>
++</table>
+diff --git a/WebAppDEMO/WebApp/Views/Shared/_Layout.cshtml b/WebAppDEMO/WebApp/Views/Shared/_Layout.cshtml
+index 1f5291b..8f585d3 100644
+--- a/WebAppDEMO/WebApp/Views/Shared/_Layout.cshtml
++++ b/WebAppDEMO/WebApp/Views/Shared/_Layout.cshtml
+@@ -8,30 +8,24 @@
+     <link rel="stylesheet" href="~/css/site.css" />
+ </head>
+ <body>
+-    <header>
+-        <nav class="navbar navbar-light bg-light " style="box-sizing: border-box; padding: 0px; z-index: 1000; position:sticky; top: 0px; margin-left: 0px; width:100%; left: 0px;">
+-            <img style="width: 100%; height:95px " src="/images/marserviz1 (2).jpg">
+- 
+-            <div class="container">
++<header>
++    <div class="container-fluid">
++        <img style="width: 100%; height: 95px" src="/images/marserviz1 (2).jpg">
++    </div>
++    <nav class="navbar navbar-expand-sm bg-light navbar-light ">
++        
++
++        <div class="container">
+ 
+-                <a class="navbar-brand" asp-controller="Home" asp-action="Index" style=" font-size: 17px; color:  #90908d; font-weight: 600;">Начало</a>
+-                <a class="navbar-item" asp-controller="Home" asp-action="Services">Услуги</a>
+-                <a class="navbar-item" asp-controller="Home" asp-action="Contacts">Контакти</a>
+-                <!--<a class="btn btn-warning" href="#/login">Вход</a>-->
+-                <!-- header
+-    <a class="navbar-item" href="#/dash">Dashboard</a>
+-    <a class="navbar-item" href="#/create">Create Offer</a>-->
+-                <!--BONUS (NOT REQUIRED)<a class="navbar-item" href="">Profile</a>BONUS (NOT REQUIRED)-->
+-                <!--
++            <a class="navbar-brand" asp-controller="Home" asp-action="Index" style="font-size: 17px; color: #90908d; font-weight: 600;">Начало</a>
++            <a class="navbar-item" asp-controller="Home" asp-action="Services">Услуги</a>
++            <a class="navbar-item" asp-controller="Home" asp-action="Contacts">Контакти</a>
+ 
++            <partial name="_LoginPartial"/>
++        </div>
+ 
+-    <a class="btn btn-warning" href="#/login">Вход</a>
+-    -->
+-                <partial name="_LoginPartial" />
+-            </div>
+-       
+-        </nav>
+-    </header>
++    </nav>
++</header>
+     <div>
+         <main role="main" class="pb-3">
+             @RenderBody()
+@@ -39,7 +33,7 @@
+     </div>
+ <footer class="page-footer font-small blue">
+     <div class="footer-copyright text-center py-3">© @DateTime.UtcNow.Year Copyright:
+-        <a href="/home"> MarServiz.com</a>
++        <a asp-controller="Home" asp-action="Index"> MarServiz.com</a>
+     </div>
+ </footer>
+     @*<footer class="border-top footer text-muted">
+diff --git a/WebAppDEMO/WebApp/Views/Shared/_LoginPartial.cshtml b/WebAppDEMO/WebApp/Views/Shared/_LoginPartial.cshtml
+index 8b25a26..01c7cd4 100644
+--- a/WebAppDEMO/WebApp/Views/Shared/_LoginPartial.cshtml
++++ b/WebAppDEMO/WebApp/Views/Shared/_LoginPartial.cshtml
+@@ -2,16 +2,17 @@
+ @inject SignInManager<IdentityUser> SignInManager
+ @inject UserManager<IdentityUser> UserManager
+ 
++
+ @if (SignInManager.IsSignedIn(User))
+ {
+ 
+-    <a class="navbar-item" asp-area="" asp-controller="Cars1" asp-action="Index">Автомобили</a>
++    <a class="navbar-item" asp-area="" asp-controller="Cars" asp-action="Index">Автомобили</a>
+ 
+ 
+-    <form class="navbar-nav" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
++    <form class="navbar-nav float-right" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+         <button type="submit" class="btn btn-warning">Logout</button>
+     </form>
+-    <li class="navbar-nav">
++    <li class="navbar-nav float-right">
+         <a class="nav-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"> @User.Identity.Name!</a>
+     </li>
+ 
+@@ -19,12 +20,15 @@
+ }
+ else
+ {
+-    <ul class="navbar-nav">
++    <ul class="navbar-nav float-right">
+         <li class="nav-item">
+             <a class="btn btn-warning" asp-area="Identity" asp-page="/Account/Login">Login</a>
+         </li>
++
++    </ul>
++    <ul class="navbar-nav float-right">
+         <li class="nav-item">
+-            <a class="nav-item" asp-area="Identity" asp-page="/Account/Register">Register</a>
++            <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+         </li>
+     </ul>
+ }
+diff --git a/WebAppDEMO/WebApp/wwwroot/css/site.css b/WebAppDEMO/WebApp/wwwroot/css/site.css
+index bd79251..976d45f 100644
+--- a/WebAppDEMO/WebApp/wwwroot/css/site.css
++++ b/WebAppDEMO/WebApp/wwwroot/css/site.css
+@@ -11,7 +11,7 @@ body {
+ }
+ 
+ h1, h2, h3, h4, h5, h6 {
+-    color: #25292a;
++    color: #656565;
+     margin: 0px 0px 10px 0px;
+     font-family: 'Overpass', sans-serif;
+     font-weight: 700;
+@@ -178,11 +178,11 @@ li.a1 {
+ 
+ /* /////////////////////////////////////// */
+ 
+-.container {
++/*.container {
+     height: 100%;
+     align-content: flex-end;
+-    display: flex; /* чупи боот местоположението на логин */
+-}
++    display: flex;*/ /* чупи боот местоположението на логин */
++/*}*/
+ 
+ .card {
+     height: 70%;
+@@ -366,22 +366,23 @@ td.description {
+     color: black;
+     cursor: pointer;
+     width: 400px;
+-    border: 2px solid blue;
++    border: 2px solid gray;
+     text-align: center;
+-    background: cornflowerblue;
++    background: lightgray;
+     padding-bottom: 10px;
+     border-radius: 10px;
+     margin-left: 20px;
+     margin-bottom: 20px;
+     margin-top: 10px;
+     height: 250px;
+-    flex-basis: 25%;
++    flex-basis: 30%;
+ }
+ 
+ .picture-added-destination {
+     width: 200px;
+     height: 150px;
+     border-radius: 50%;
++    border: 1px solid gray;
+ }
+ 
+     .picture-added-destination:hover {
+@@ -393,4 +394,8 @@ td.description {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: space-around;
++    
+ }
++.option {
++    color: #90908d;
++}
+\ No newline at end of file
+-- 
+2.31.1.windows.1
+
