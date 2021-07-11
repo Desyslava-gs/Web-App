@@ -15,8 +15,8 @@
             <div class="container">
 
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index" style=" font-size: 17px; color:  #90908d; font-weight: 600;">Начало</a>
-                <a class="navbar-item"  asp-area="" asp-controller="Services" asp-action="Services">Услуги</a>
-                <a class="navbar-item" asp-controller="Contacts" asp-action="Contacts">Контакти</a>
+                <a class="navbar-item" asp-controller="Home" asp-action="Services">Услуги</a>
+                <a class="navbar-item" asp-controller="Home" asp-action="Contacts">Контакти</a>
                 <!--<a class="btn btn-warning" href="#/login">Вход</a>-->
                 <!-- header
     <a class="navbar-item" href="#/dash">Dashboard</a>
@@ -32,13 +32,13 @@
        
         </nav>
     </header>
-    <div class="container">
+    <div>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 <footer class="page-footer font-small blue">
-    <div class="footer-copyright text-center py-3">© 2021 Copyright:
+    <div class="footer-copyright text-center py-3">© @DateTime.UtcNow.Year Copyright:
         <a href="/home"> MarServiz.com</a>
     </div>
 </footer>
