@@ -11,7 +11,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: #25292a;
+    color: #656565;
     margin: 0px 0px 10px 0px;
     font-family: 'Overpass', sans-serif;
     font-weight: 700;
@@ -178,11 +178,11 @@ li.a1 {
 
 /* /////////////////////////////////////// */
 
-.container {
+/*.container {
     height: 100%;
     align-content: flex-end;
-    display: flex; /* чупи боот местоположението на логин */
-}
+    display: flex;*/ /* чупи боот местоположението на логин */
+/*}*/
 
 .card {
     height: 70%;
@@ -366,22 +366,23 @@ td.description {
     color: black;
     cursor: pointer;
     width: 400px;
-    border: 2px solid blue;
+    border: 2px solid gray;
     text-align: center;
-    background: cornflowerblue;
+    background: lightgray;
     padding-bottom: 10px;
     border-radius: 10px;
     margin-left: 20px;
     margin-bottom: 20px;
     margin-top: 10px;
     height: 250px;
-    flex-basis: 25%;
+    flex-basis: 30%;
 }
 
 .picture-added-destination {
     width: 200px;
     height: 150px;
     border-radius: 50%;
+    border: 1px solid gray;
 }
 
     .picture-added-destination:hover {
@@ -393,4 +394,8 @@ td.description {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    
+}
+.option {
+    color: #90908d;
 }

@@ -7,26 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Data.Models;
-using WebApp.Models.Cars;
 
 namespace WebApp.Controllers
 {
-    public class CarsController : Controller
+    public class RepairsController : Controller
     {
         private readonly CarRepairDbContext _context;
 
-        public CarsController(CarRepairDbContext context)
+        public RepairsController(CarRepairDbContext context)
         {
             _context = context;
         }
 
-        // GET: Cars1
+        // GET: Repairs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cars.ToListAsync());
+            var carRepairDbContext = _context.Repairs.Include(r => r.Car);
+            return View(await carRepairDbContext.ToListAsync());
         }
 
-        // GET: Cars1/Details/5
+        // GET: Repairs/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -34,67 +34,42 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars
+            var repair = await _context.Repairs
+                .Include(r => r.Car)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (car == null)
+            if (repair == null)
             {
                 return NotFound();
             }
 
-            return View(car);
+            return View(repair);
         }
 
-        // GET: Cars1/Create
+        // GET: Repairs/Create
         public IActionResult Create()
         {
-            return View(new CreateCarFormModel
-            {
-                FuelTypes= this.GetFuelType()
-            });
+            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Id");
+            return View();
         }
 
+        // POST: Repairs/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateCarFormModel car)
+        public async Task<IActionResult> Create([Bind("Id,TypeOfRepair,Price,StartDate,EndDate,CarId")] Repair repair)
         {
             if (ModelState.IsValid)
             {
-                var carData = new Car
-                {
-                    Make = car.Make,
-                    Model = car.Model,
-                    Color = car.Color,
-                    Description = car.Description,
-                    FuelTypeId= car.FuelTypeId,
-                    PictureUrl = car.PictureUrl,
-                    PlateNumber = car.PlateNumber,
-                    VinNumber = car.VinNumber,
-                    Year = car.Year,
-                    Repairs = new List<Repair>(),
-
-                };
-                this._context.Cars.Add(carData);
-                this._context.SaveChanges();
-
-                 return RedirectToAction("Index");
+                _context.Add(repair);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            return View(car);
+            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Id", repair.CarId);
+            return View(repair);
         }
 
-        private IEnumerable<FuelTypeViewModel> GetFuelType()
-        {
-            return _context
-                .FuelTypes
-                .Select(ft =>  new FuelTypeViewModel
-                {
-                    Id=ft.Id,
-                    Name = ft.Name,
-
-                }).ToList();
-
-
-        }
-        // GET: Cars1/Edit/5
+        // GET: Repairs/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -102,22 +77,23 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null)
+            var repair = await _context.Repairs.FindAsync(id);
+            if (repair == null)
             {
                 return NotFound();
             }
-            return View(car);
+            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Id", repair.CarId);
+            return View(repair);
         }
 
-        // POST: Cars1/Edit/5
+        // POST: Repairs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Make,Model,Year,Color,PlateNumber,Fuel,VinNumber,PictureUrl,Description")] Car car)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,TypeOfRepair,Price,StartDate,EndDate,CarId")] Repair repair)
         {
-            if (id != car.Id)
+            if (id != repair.Id)
             {
                 return NotFound();
             }
@@ -126,12 +102,12 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(car);
+                    _context.Update(repair);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CarExists(car.Id))
+                    if (!RepairExists(repair.Id))
                     {
                         return NotFound();
                     }
@@ -142,10 +118,11 @@ namespace WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(car);
+            ViewData["CarId"] = new SelectList(_context.Cars, "Id", "Id", repair.CarId);
+            return View(repair);
         }
 
-        // GET: Cars1/Delete/5
+        // GET: Repairs/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -153,30 +130,31 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars
+            var repair = await _context.Repairs
+                .Include(r => r.Car)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (car == null)
+            if (repair == null)
             {
                 return NotFound();
             }
 
-            return View(car);
+            return View(repair);
         }
 
-        // POST: Cars1/Delete/5
+        // POST: Repairs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var car = await _context.Cars.FindAsync(id);
-            _context.Cars.Remove(car);
+            var repair = await _context.Repairs.FindAsync(id);
+            _context.Repairs.Remove(repair);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CarExists(string id)
+        private bool RepairExists(string id)
         {
-            return _context.Cars.Any(e => e.Id == id);
+            return _context.Repairs.Any(e => e.Id == id);
         }
     }
 }

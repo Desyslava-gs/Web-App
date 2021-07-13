@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp.Data;
 
 namespace WebApp.Data.Migrations
 {
     [DbContext(typeof(CarRepairDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210710011240_CarRepairTables")]
+    partial class CarRepairTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,8 +233,10 @@ namespace WebApp.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FuelTypeId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Fuel")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Make")
                         .IsRequired()
@@ -263,22 +267,7 @@ namespace WebApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FuelTypeId");
-
                     b.ToTable("Cars");
-                });
-
-            modelBuilder.Entity("WebApp.Data.Models.FuelType", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FuelTypes");
                 });
 
             modelBuilder.Entity("WebApp.Data.Models.Repair", b =>
@@ -360,16 +349,6 @@ namespace WebApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebApp.Data.Models.Car", b =>
-                {
-                    b.HasOne("WebApp.Data.Models.FuelType", "FuelType")
-                        .WithMany("Cars")
-                        .HasForeignKey("FuelTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("FuelType");
-                });
-
             modelBuilder.Entity("WebApp.Data.Models.Repair", b =>
                 {
                     b.HasOne("WebApp.Data.Models.Car", "Car")
@@ -383,11 +362,6 @@ namespace WebApp.Data.Migrations
             modelBuilder.Entity("WebApp.Data.Models.Car", b =>
                 {
                     b.Navigation("Repairs");
-                });
-
-            modelBuilder.Entity("WebApp.Data.Models.FuelType", b =>
-                {
-                    b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618
         }
