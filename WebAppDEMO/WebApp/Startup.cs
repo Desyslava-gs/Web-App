@@ -93,7 +93,10 @@ namespace WebApp
                     name: "cars",
                     pattern: "{controller=Cars}/{action=Cars}");
 
-
+                
+                endpoints.MapControllerRoute(
+                    name: "cars",
+                    pattern:"{controller=Cars}/{action=Details}/{id?}");
 
 
 

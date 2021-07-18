@@ -13,33 +13,53 @@ namespace WebApp.Controllers
 {
     public class CarsController : Controller
     {
-        private readonly CarRepairDbContext _context;
+        private readonly CarRepairDbContext data;
 
-        public CarsController(CarRepairDbContext context)
+        public CarsController(CarRepairDbContext data)
         {
-            _context = context;
+            this.data = data;
         }
 
         // GET: Cars1
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Cars.ToListAsync());
+            //return View(new CreateCarFormModel
+            //{
+            //    FuelTypes= this.GetFuelType()
+            //});
+            return View(data.Cars.ToList());
         }
 
-        // GET: Cars1/Details/5
-        public async Task<IActionResult> Details(string id)
+        //// GET: Cars1/Details/5
+        public IActionResult Details(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var car = await _context.Cars
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var car = this.data.Cars
+                .Where(m => m.Id == id)
+                .Select(c => new DetailsCarViewModel
+                {
+                    PictureUrl = c.PictureUrl,
+                    Make = c.Make,
+                    Model = c.Model,
+                    Color = c.Color,
+                    Description = c.Description,
+                    Year = c.Year, 
+                    FuelType = c.FuelType.Name ,//c.FuelTypeId,
+                    PlateNumber = c.PlateNumber,
+                    VinNumber = c.VinNumber,
+
+                }).ToList()
+                .FirstOrDefault();
+             //  car.FuelType = this.GetFuelType();
             if (car == null)
             {
                 return NotFound();
             }
+
 
             return View(car);
         }
@@ -49,7 +69,7 @@ namespace WebApp.Controllers
         {
             return View(new CreateCarFormModel
             {
-                FuelTypes= this.GetFuelType()
+                FuelTypes = this.GetFuelType()
             });
         }
 
@@ -57,37 +77,39 @@ namespace WebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateCarFormModel car)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var carData = new Car
-                {
-                    Make = car.Make,
-                    Model = car.Model,
-                    Color = car.Color,
-                    Description = car.Description,
-                    FuelTypeId= car.FuelTypeId,
-                    PictureUrl = car.PictureUrl,
-                    PlateNumber = car.PlateNumber,
-                    VinNumber = car.VinNumber,
-                    Year = car.Year,
-                    Repairs = new List<Repair>(),
-
-                };
-                this._context.Cars.Add(carData);
-                this._context.SaveChanges();
-
-                 return RedirectToAction("Index");
+                car.FuelTypes = this.GetFuelType();
+                return View(car);
             }
-            return View(car);
+
+            var carData = new Car
+            {
+                Make = car.Make,
+                Model = car.Model,
+                Color = car.Color,
+                Description = car.Description,
+                FuelTypeId = car.FuelTypeId,
+                PictureUrl = car.PictureUrl,
+                PlateNumber = car.PlateNumber,
+                VinNumber = car.VinNumber,
+                Year = car.Year,
+                Repairs = new List<Repair>(),
+            };
+
+            this.data.Cars.Add(carData);
+            this.data.SaveChanges();
+            return RedirectToAction("Index");
+
         }
 
         private IEnumerable<FuelTypeViewModel> GetFuelType()
         {
-            return _context
+            return data
                 .FuelTypes
-                .Select(ft =>  new FuelTypeViewModel
+                .Select(ft => new FuelTypeViewModel
                 {
-                    Id=ft.Id,
+                    Id = ft.Id,
                     Name = ft.Name,
 
                 }).ToList();
@@ -102,7 +124,7 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars.FindAsync(id);
+            var car = await data.Cars.FindAsync(id);
             if (car == null)
             {
                 return NotFound();
@@ -126,8 +148,8 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(car);
-                    await _context.SaveChangesAsync();
+                    data.Update(car);
+                    await data.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -153,7 +175,7 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars
+            var car = await data.Cars
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (car == null)
             {
@@ -168,15 +190,15 @@ namespace WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var car = await _context.Cars.FindAsync(id);
-            _context.Cars.Remove(car);
-            await _context.SaveChangesAsync();
+            var car = await data.Cars.FindAsync(id);
+            data.Cars.Remove(car);
+            await data.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CarExists(string id)
         {
-            return _context.Cars.Any(e => e.Id == id);
+            return data.Cars.Any(e => e.Id == id);
         }
     }
 }

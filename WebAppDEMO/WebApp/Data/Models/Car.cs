@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApp.Models.Cars;
 using static WebApp.Data.DataConstants;
 
 namespace WebApp.Data.Models
@@ -22,7 +23,7 @@ namespace WebApp.Data.Models
         [MaxLength(CarModelMaxLength)]
         public string Model { get; set; }
 
-        [Range(CarYearMinValue, 2100)]
+        [Range(CarYearMinValue, CarYearMaxValue)]
         public int Year { get; set; }
 
         [MaxLength(CarColorMaxLength)]
@@ -40,14 +41,10 @@ namespace WebApp.Data.Models
         public string PictureUrl { get; set; }
 
         public string Description { get; set; }
-
+         
         public string FuelTypeId { get; set; }
         public FuelType FuelType { get; set; }
-
-        //  public string OwnerId { get; set; }
-
-        //    public User Owner { get; set; }
-
+        
         public IEnumerable<Repair> Repairs { get; set; } = new List<Repair>();
     }
 }

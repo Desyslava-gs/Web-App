@@ -32,7 +32,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"></span>
                     </div>
-                    <input asp-for="Year" class="form-control" placeholder="Година">
+                    <input asp-for="Year" value="" class="form-control" placeholder="Година">
                     <span asp-validation-for="Year" class="text-danger"></span>
                 </div>
                 <div class="input-group form-group">
@@ -60,11 +60,11 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"></span>
                     </div>
-                  @*  <input for="FuelType" asp-for="Fuel" class="form-control" placeholder="Вид Гориво">*@
-                    <select asp-for="FuelTypeId" class="form-control" >
-                        <option value="" disabled selected hidden >Вид Гориво</option>
+                    <select asp-for="FuelTypeId" class="form-control">
+                        <option value="" disabled selected hidden>Вид Гориво</option>
                         @foreach (var item in Model.FuelTypes)
                         {
+
                             <option value="@item.Id">@item.Name</option>
                         }
                     </select>

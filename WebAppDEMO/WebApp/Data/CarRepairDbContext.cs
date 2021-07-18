@@ -29,7 +29,7 @@ namespace WebApp.Data
             builder.Entity<Car>()
                 .HasOne(ft=>ft.FuelType)
                 .WithMany(ft => ft.Cars)
-                .HasForeignKey(ft=>ft.Id)
+                .HasForeignKey(ft=>ft.FuelTypeId)
                 .OnDelete(deleteBehavior:DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
