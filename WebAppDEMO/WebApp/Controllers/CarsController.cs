@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -42,24 +43,25 @@ namespace WebApp.Controllers
                 .Where(m => m.Id == id)
                 .Select(c => new DetailsCarViewModel
                 {
+                    Id = c.Id,
                     PictureUrl = c.PictureUrl,
                     Make = c.Make,
                     Model = c.Model,
                     Color = c.Color,
                     Description = c.Description,
-                    Year = c.Year, 
-                    FuelType = c.FuelType.Name ,//c.FuelTypeId,
+                    Year = c.Year,
+                    FuelType = c.FuelType.Name,//c.FuelTypeId,
                     PlateNumber = c.PlateNumber,
                     VinNumber = c.VinNumber,
 
                 }).ToList()
                 .FirstOrDefault();
-             //  car.FuelType = this.GetFuelType();
+             
             if (car == null)
             {
                 return NotFound();
             }
-
+  //car.FuelType = this.GetFuelType().ToString();
 
             return View(car);
         }
@@ -77,6 +79,11 @@ namespace WebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateCarFormModel car)
         {
+            if (!this.data.FuelTypes.Any(c=>c.Id==car.FuelTypeId))
+            {
+                this.ModelState.AddModelError(nameof(car.FuelTypeId), "FuelType does not exist.");
+            }
+
             if (!ModelState.IsValid)
             {
                 car.FuelTypes = this.GetFuelType();
@@ -85,6 +92,7 @@ namespace WebApp.Controllers
 
             var carData = new Car
             {
+                Id = car.Id,
                 Make = car.Make,
                 Model = car.Model,
                 Color = car.Color,
@@ -117,19 +125,33 @@ namespace WebApp.Controllers
 
         }
         // GET: Cars1/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public IActionResult Edit(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var car = await data.Cars.FindAsync(id);
+            var car =  data.Cars.Find(id);
+           
             if (car == null)
             {
                 return NotFound();
-            }
-            return View(car);
+            } 
+            return View(new EditCarFormModel
+            {
+                FuelTypes = this.GetFuelType(),
+                Id = car.Id,
+                Make = car.Make,
+                Model = car.Model,
+                Color = car.Color,
+                Description = car.Description,
+                FuelTypeId = car.FuelTypeId,
+                PictureUrl = car.PictureUrl,
+                PlateNumber = car.PlateNumber,
+                VinNumber = car.VinNumber,
+                Year = car.Year,
+            });
         }
 
         // POST: Cars1/Edit/5
@@ -137,7 +159,7 @@ namespace WebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Make,Model,Year,Color,PlateNumber,Fuel,VinNumber,PictureUrl,Description")] Car car)
+        public IActionResult Edit(string id, EditCarFormModel car)
         {
             if (id != car.Id)
             {
@@ -148,8 +170,22 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    data.Update(car);
-                    await data.SaveChangesAsync();
+                    var carData = new Car
+                    {
+                        Id = car.Id,
+                        Make = car.Make,
+                        Model = car.Model,
+                        Color = car.Color,
+                        Description = car.Description,
+                        FuelTypeId = car.FuelTypeId,
+                        PictureUrl = car.PictureUrl,
+                        PlateNumber = car.PlateNumber,
+                        VinNumber = car.VinNumber,
+                        Year = car.Year,
+                    };
+                   
+                    this.data.Update(carData);
+                    this.data.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -162,7 +198,7 @@ namespace WebApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             return View(car);
         }
@@ -200,5 +236,23 @@ namespace WebApp.Controllers
         {
             return data.Cars.Any(e => e.Id == id);
         }
+
+        //private string ProcessUploadedFile(SpeakerViewModel model)
+        //{
+        //    string uniqueFileName = null;
+
+        //    if (model.SpeakerPicture != null)
+        //    {
+        //        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "Uploads");
+        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + model.SpeakerPicture.FileName;
+        //        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            model.SpeakerPicture.CopyTo(fileStream);
+        //        }
+        //    }
+
+        //    return uniqueFileName;
+        //}
     }
 }

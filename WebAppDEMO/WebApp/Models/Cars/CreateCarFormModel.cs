@@ -10,10 +10,9 @@ namespace WebApp.Models.Cars
 {
     public class CreateCarFormModel
     {
-        //[Key]
-        //[Required]
-        //public string Id { get; set; }
-
+        [Key]
+        [Required]
+        public string Id { get; set; }
 
         [Required]
         [StringLength(CarMakeMaxLength, MinimumLength = CarMakeMinLength)]

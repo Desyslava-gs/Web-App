@@ -82,21 +82,21 @@ namespace WebApp
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
 
-                endpoints.MapControllerRoute(
-                    name: "services",
-                    pattern: "{controller=Services}/{action=Services}");
-                endpoints.MapControllerRoute(
-                    name: "contacts",
-                    pattern: "{controller=Contacts}/{action=Contacts}");
+                //endpoints.MapControllerRoute(
+                //    name: "services",
+                //    pattern: "{controller=Services}/{action=Services}");
+                //endpoints.MapControllerRoute(
+                //    name: "contacts",
+                //    pattern: "{controller=Contacts}/{action=Contacts}");
 
-                endpoints.MapControllerRoute(
-                    name: "cars",
-                    pattern: "{controller=Cars}/{action=Cars}");
+                //endpoints.MapControllerRoute(
+                //    name: "cars",
+                //    pattern: "{controller=Cars}/{action=Cars}");
 
                 
-                endpoints.MapControllerRoute(
-                    name: "cars",
-                    pattern:"{controller=Cars}/{action=Details}/{id?}");
+                //endpoints.MapControllerRoute(
+                //    name: "cars",
+                //    pattern:"{controller=Cars}/{action=Details}/{id?}");
 
 
 

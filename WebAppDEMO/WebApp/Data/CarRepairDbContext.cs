@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data.Models;
+using WebApp.Models.Cars;
 
 namespace WebApp.Data
 {
@@ -34,5 +35,7 @@ namespace WebApp.Data
 
             base.OnModelCreating(builder);
         }
+
+        public DbSet<WebApp.Models.Cars.EditCarFormModel> EditCarFormModel { get; set; }
     }
 }

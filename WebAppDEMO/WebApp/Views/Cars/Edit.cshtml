@@ -1,4 +1,4 @@
-﻿@model WebApp.Data.Models.Car
+﻿@model EditCarFormModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -56,33 +56,23 @@
                     <input asp-for="VinNumber" class="form-control" placeholder="Рама Номер">
                     <span asp-validation-for="VinNumber" class="text-danger"></span>
                 </div>
+                
+
+                <span asp-validation-for="FuelTypes" class="text-danger"></span>
                 <div class="input-group form-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"></span>
-                    </div>
-                    <input asp-for="FuelType" class="form-control" placeholder="Вид Гориво">
-                    <span asp-validation-for="FuelType" class="text-danger"></span>
+                <div class="input-group-prepend">
+                    <span class="input-group-text"></span>
+                </div>
+                <select asp-for="FuelTypeId" class="form-control">
+                    <option value="" disabled selected hidden>Вид Гориво</option>
+                    @foreach (var item in Model.FuelTypes)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
                 </div>
                 
-                
-                
-                
-                @*<div class="input-group form-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"></span>
-                    </div>
-                    <select asp-for="FuelTypeId" class="form-control" >
-                        <option value="" disabled selected hidden >Вид Гориво</option>
-                        @foreach (var item in Model.FuelTypes)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }
-                    </select>
-                    <span asp-validation-for="FuelTypes" class="text-danger"></span>
-                </div>*@
-
-
-
+              
 
                 <div class="input-group form-group">
                     <div class="input-group-prepend">
