@@ -9,7 +9,7 @@ namespace WebApp.Models.Cars
     public class FuelTypeViewModel
     {
         public string Id { get; set; }
-        [Required]
+      // [Required]
         public string Name { get; set; }
     }
 }

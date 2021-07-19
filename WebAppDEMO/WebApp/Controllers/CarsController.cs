@@ -24,11 +24,20 @@ namespace WebApp.Controllers
         // GET: Cars1
         public IActionResult Index()
         {
-            //return View(new CreateCarFormModel
-            //{
-            //    FuelTypes= this.GetFuelType()
-            //});
-            return View(data.Cars.ToList());
+            var car =this.data.Cars
+                .OrderBy(c=>c.Repairs.Count())
+                .Select(c => new IndexCarAllViewModel
+            {
+                Id = c.Id,
+                Make = c.Make,
+                Model = c.Model,
+                PictureUrl = c.PictureUrl,
+                PlateNumber = c.PlateNumber,
+                Year = c.Year
+            }).ToList();
+
+            return View(car);
+            // return View(data.Cars.OrderBy(c=>c.Repairs.Count()).ToList());
         }
 
         //// GET: Cars1/Details/5
@@ -66,7 +75,7 @@ namespace WebApp.Controllers
             return View(car);
         }
 
-        // GET: Cars1/Create
+        // GET: Cars/Create
         public IActionResult Create()
         {
             return View(new CreateCarFormModel
@@ -111,20 +120,8 @@ namespace WebApp.Controllers
 
         }
 
-        private IEnumerable<FuelTypeViewModel> GetFuelType()
-        {
-            return data
-                .FuelTypes
-                .Select(ft => new FuelTypeViewModel
-                {
-                    Id = ft.Id,
-                    Name = ft.Name,
+       
 
-                }).ToList();
-
-
-        }
-        // GET: Cars1/Edit/5
         public IActionResult Edit(string id)
         {
             if (id == null)
@@ -154,9 +151,6 @@ namespace WebApp.Controllers
             });
         }
 
-        // POST: Cars1/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(string id, EditCarFormModel car)
@@ -204,15 +198,15 @@ namespace WebApp.Controllers
         }
 
         // GET: Cars1/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public IActionResult Delete(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var car = await data.Cars
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var car =  data.Cars
+                .FirstOrDefault(m => m.Id == id);
             if (car == null)
             {
                 return NotFound();
@@ -224,17 +218,31 @@ namespace WebApp.Controllers
         // POST: Cars1/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public IActionResult DeleteConfirmed(string id)
         {
-            var car = await data.Cars.FindAsync(id);
+            var car = data.Cars.Find(id);
             data.Cars.Remove(car);
-            await data.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            data.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         private bool CarExists(string id)
         {
             return data.Cars.Any(e => e.Id == id);
+        }
+
+        private IEnumerable<FuelTypeViewModel> GetFuelType()
+        {
+            return data
+                .FuelTypes
+                .Select(ft => new FuelTypeViewModel
+                {
+                    Id = ft.Id,
+                    Name = ft.Name,
+
+                }).ToList();
+
+
         }
 
         //private string ProcessUploadedFile(SpeakerViewModel model)

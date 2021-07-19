@@ -1,7 +1,30 @@
-﻿@model IEnumerable<WebApp.Data.Models.Car>
+﻿@model List<IndexCarAllViewModel>
 
 @{
     ViewData["Title"] = "Index";
+}
+@if (Model.Any())
+{<div class="container">
+        <h2 class="text-center">Моите Автомобили</h2>
+
+    </div>
+    <div style="margin-top:0%; margin-bottom: 2%;" class="page-header4">
+
+        <div class="container">
+
+            <div style="margin-top: 3%; width:max-content; " class="page-caption1">
+                <ul>
+                    <li style="animation-duration: 4s; color: #FFC312; font-weight: 1000;" class="a1">You don't have cars to repair...</li>
+                </ul><div class="container">
+                    <p>
+                        <a class="btn btn-warning" asp-action="Create">Добави Автомобил...</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
 }
 <div class="container">
     <h2 class="text-center">Моите Автомобили</h2>
@@ -11,10 +34,8 @@
         </p>
     </div>
 </div>
-
 <hr />
-
-<div class="page-header3" style="margin-top: 5%; margin-bottom: 5%;">
+<div class="page-header3" style="margin-top: 2%; margin-bottom: 5%;">
     <div class="card-group">
         @foreach (var item in Model)
         {
@@ -26,18 +47,10 @@
                     <h3>@item.PlateNumber</h3>
                     <span>@item.Make @item.Model </span> <span>@item.Year</span>
                 </a>
-
             </div>
-
-            @*<div class="guest">
-                No destinations possible! Please sign in...
-            </div>*@
         }
     </div>
 </div>
-
-
-
 
 
 @*<table class="table">
