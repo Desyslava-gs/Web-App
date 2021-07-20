@@ -3,43 +3,41 @@
 @{
     ViewData["Title"] = "Index";
 }
-@if (Model.Any())
-{<div class="container">
-        <h2 class="text-center">Моите Автомобили</h2>
-
+@if (!Model.Any())
+{
+<div style="margin-top:0%; margin-bottom: 2%;" class="page-header4">
+    <div class="container">
+        <h2 class="text-center text-light">Моите Автомобили</h2>
     </div>
-    <div style="margin-top:0%; margin-bottom: 2%;" class="page-header4">
-
-        <div class="container">
-
-            <div style="margin-top: 3%; width:max-content; " class="page-caption1">
-                <ul>
-                    <li style="animation-duration: 4s; color: #FFC312; font-weight: 1000;" class="a1">You don't have cars to repair...</li>
-                </ul><div class="container">
-                    <p>
-                        <a class="btn btn-warning" asp-action="Create">Добави Автомобил...</a>
-                    </p>
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div style="margin-top: 3%; width:max-content; " class="page-caption1">
+                    <h1 class="page-title">
+                        <ul class="a">
+                            <li style="animation-duration: 4s; color: #FFC312; font-weight: 1000;" class="a1">You don't have cars to repair...</li>
+                        </ul>
+                        <div class="container">
+                            <p>
+                                <a class="btn btn-warning font-weight-bold" asp-action="Create">Добави Автомобил...</a>
+                            </p>
+                        </div>
+                    </h1>
                 </div>
             </div>
-
         </div>
-
-    </div>
-}
-<div class="container">
-    <h2 class="text-center">Моите Автомобили</h2>
-    <div>
-        <p>
-            <a class="btn btn-warning" asp-action="Create">Добави Автомобил...</a>
-        </p>
     </div>
 </div>
-<hr />
-<div class="page-header3" style="margin-top: 2%; margin-bottom: 5%;">
+}
+<div class="page-header3" style="margin-top: 0%; margin-bottom: 5%;">
+    <div class="container-fluid">
+        <h2 class="text-light text-center ">Моите Автомобили</h2>
+        <a class="btn btn-warning mt-3 ml-3 font-weight-bold" asp-action="Create">Добави Автомобил... </a>
+        <hr />
+    </div>
     <div class="card-group">
         @foreach (var item in Model)
         {
-
             <div class="added-destinations">
                 <a asp-action="Details" asp-route-id="@item.Id" class="added-destination">
                     <img src="@item.PictureUrl"
@@ -53,76 +51,3 @@
 </div>
 
 
-@*<table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Make)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Model)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Year)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Color)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PlateNumber)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Fuel)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.VinNumber)
-                </th>
-                <th>
-                        @Html.DisplayNameFor(model => model.PictureUrl)
-                    </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Make)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Model)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Year)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Color)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PlateNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Fuel)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.VinNumber)
-                    </td>
-                    <td>
-                            @Html.DisplayFor(modelItem => item.PictureUrl)
-                        </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>*@

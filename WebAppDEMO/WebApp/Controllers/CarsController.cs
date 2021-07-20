@@ -206,7 +206,23 @@ namespace WebApp.Controllers
             }
 
             var car =  data.Cars
+                
+                .Select(c => new DeleteCarFormModel
+                {
+                    Id = c.Id,
+                    PictureUrl = c.PictureUrl,
+                    Make = c.Make,
+                    Model = c.Model,
+                    Color = c.Color,
+                    Description = c.Description,
+                    Year = c.Year,
+                    FuelType = c.FuelType.Name,//c.FuelTypeId,
+                    PlateNumber = c.PlateNumber,
+                    VinNumber = c.VinNumber,
+
+                }).ToList()
                 .FirstOrDefault(m => m.Id == id);
+                ;
             if (car == null)
             {
                 return NotFound();

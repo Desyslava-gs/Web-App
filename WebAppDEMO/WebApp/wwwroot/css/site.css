@@ -90,6 +90,12 @@ a {
     position: relative;
     background-size: cover;
 }
+.page-header3 {
+    background: url("/images/shutterstock_668750248.jpg")no-repeat;
+    background-position: center;
+    position: relative;
+    background-size: cover;
+}
 .page-header4 {
     background: url("/images/timthumb.jpg")no-repeat;
     background-position: center;
