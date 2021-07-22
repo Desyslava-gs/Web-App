@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApp.Data;
+using WebApp.Infrastructure;
 
 namespace WebApp
 {
@@ -24,24 +25,27 @@ namespace WebApp
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
+            services.AddDbContext<CarRepairDbContext>(options => options
+                .UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            services
+                .AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options =>
+            services
+                .AddDefaultIdentity<IdentityUser>(options =>
                 {
                     options.SignIn.RequireConfirmedAccount = true;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                     options.Password.RequireLowercase = false;
-                    options.Password.RequiredUniqueChars=0;
+                    options.Password.RequiredUniqueChars = 0;
                 })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
+                .AddEntityFrameworkStores<CarRepairDbContext>();
+
+            services
+                .AddControllersWithViews();
 
 
             //FACEBOOK 
@@ -53,9 +57,10 @@ namespace WebApp
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.PrepareDatabase();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -67,40 +72,44 @@ namespace WebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
+            app.UseHttpsRedirection()
+               .UseStaticFiles()
+               .UseRouting()
+               .UseAuthentication()
+               .UseAuthorization()
+               .UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
+
+                //endpoints.MapControllerRoute(
+                //    name: "services",
+                //    pattern: "{controller=Services}/{action=Services}");
+                //endpoints.MapControllerRoute(
+                //    name: "contacts",
+                //    pattern: "{controller=Contacts}/{action=Contacts}");
+
+                //endpoints.MapControllerRoute(
+                //    name: "cars",
+                //    pattern: "{controller=Cars}/{action=Cars}");
+
+                
+                //endpoints.MapControllerRoute(
+                //    name: "cars",
+                //    pattern:"{controller=Cars}/{action=Details}/{id?}");
+
+
 
                 endpoints.MapControllerRoute(
-                    name: "services",
-                    pattern: "{controller=Services}/{action=Services}");
-                endpoints.MapControllerRoute(
-                    name: "contacts",
-                    pattern: "{controller=Contacts}/{action=Contacts}");
-
-                endpoints.MapControllerRoute(
-                    name: "cars",
-                    pattern: "{controller=Cars}/{action=Cars}");
-
-
-
-                endpoints.MapRazorPages(); endpoints.MapControllerRoute(
                      name: "blog",
                      pattern: "/Article/{date}/{id}",
                      defaults: new { controller = "Blog", action = "Article" },
                      constraints: new { date = "[0-9]" });
                 endpoints.MapRazorPages();
             });
+
+            
+
         }
     }
 }
