@@ -84,7 +84,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
+<<<<<<< HEAD
         [AutoValidateAntiforgeryToken]
+=======
+        [ValidateAntiForgeryToken]
+>>>>>>> 80c75658fdbbc3df966ae3c4debeca42484b0a97
         public IActionResult Create(CreateCarFormModel car)
         {
             if (!this.data.FuelTypes.Any(c => c.Id == car.FuelTypeId))
@@ -150,7 +154,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
+<<<<<<< HEAD
         [AutoValidateAntiforgeryToken]
+=======
+        [ValidateAntiForgeryToken]
+>>>>>>> 80c75658fdbbc3df966ae3c4debeca42484b0a97
         public IActionResult Edit(string id, EditCarFormModel car)
         {
             if (id != car.Id)
@@ -231,7 +239,11 @@ namespace WebApp.Controllers
 
         // POST: Cars1/Delete/5
         [HttpPost, ActionName("Delete")]
+<<<<<<< HEAD
         [AutoValidateAntiforgeryToken]
+=======
+        [ValidateAntiForgeryToken]
+>>>>>>> 80c75658fdbbc3df966ae3c4debeca42484b0a97
         public IActionResult DeleteConfirmed(string id)
         {
             var car = data.Cars.Find(id);

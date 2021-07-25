@@ -55,7 +55,12 @@ namespace WebApp.Controllers
         }
 
         // POST: Repairs/Create
+<<<<<<< HEAD
       
+=======
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+>>>>>>> 80c75658fdbbc3df966ae3c4debeca42484b0a97
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Price,StartDate,EndDate,Description,CarId,RepairTypeId")] Repair repair)
