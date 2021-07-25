@@ -1,8 +1,14 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "IXCu+doKy87NW4xIRwuhMR4ACb6oS6rmOHbkjPj+p7Mg69xJAK4JqKaybGrT2xCMLSenz9VSTXoZrihQF6V7Fg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Ivo\\source\\repos\\WebAppDEMO\\WebApp\\WebApp.csproj",
+=======
+  "dgSpecHash": "rg1aW8MwaKw9y69oRefbt+i52pcEbPHy0LFbylPSus93aNFm9yU3cQ2D0K/N1xty1tZeenR5z1EdGZNYMXdp5Q==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Ivo\\Desktop\\WebAppDEMO\\WebApp\\WebApp.csproj",
+>>>>>>> 80c75658fdbbc3df966ae3c4debeca42484b0a97
   "expectedPackageFiles": [
     "C:\\Users\\Ivo\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Ivo\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.6\\microsoft.aspnetcore.cryptography.internal.5.0.6.nupkg.sha512",

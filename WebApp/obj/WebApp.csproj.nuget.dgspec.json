@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "C:\\Users\\Ivo\\source\\repos\\WebAppDEMO\\WebApp\\WebApp.csproj": {}
   },
   "projects": {
@@ -12,6 +13,19 @@
         "projectPath": "C:\\Users\\Ivo\\source\\repos\\WebAppDEMO\\WebApp\\WebApp.csproj",
         "packagesPath": "C:\\Users\\Ivo\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\Ivo\\source\\repos\\WebAppDEMO\\WebApp\\obj\\",
+=======
+    "C:\\Users\\Ivo\\Desktop\\WebAppDEMO\\WebApp\\WebApp.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Ivo\\Desktop\\WebAppDEMO\\WebApp\\WebApp.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Ivo\\Desktop\\WebAppDEMO\\WebApp\\WebApp.csproj",
+        "projectName": "WebApp",
+        "projectPath": "C:\\Users\\Ivo\\Desktop\\WebAppDEMO\\WebApp\\WebApp.csproj",
+        "packagesPath": "C:\\Users\\Ivo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Ivo\\Desktop\\WebAppDEMO\\WebApp\\obj\\",
+>>>>>>> 80c75658fdbbc3df966ae3c4debeca42484b0a97
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

@@ -458,7 +458,17 @@ C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Areas\Identit
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Areas\Identity\Pages\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Areas\Identity\Pages\_ViewImports.cshtml.g.cs
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Areas\Identity\Pages\_ViewStart.cshtml.g.cs
+<<<<<<< HEAD
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Home\Index.cshtml.g.cs
+=======
+C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Cars\Cars.cshtml.g.cs
+C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Cats\All.cshtml.g.cs
+C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Cats\Create.cshtml.g.cs
+C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Contacts\Contacts.cshtml.g.cs
+C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Home\Index.cshtml.g.cs
+C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Home\Privacy.cshtml.g.cs
+C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Services\Services.cshtml.g.cs
+>>>>>>> 80c75658fdbbc3df966ae3c4debeca42484b0a97
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Shared\Error.cshtml.g.cs
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Shared\_Layout.cshtml.g.cs
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Shared\_LoginPartial.cshtml.g.cs
@@ -1444,6 +1454,7 @@ C:\Users\Ivo\Desktop\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Repairs\Dele
 C:\Users\Ivo\Desktop\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Repairs\Details.cshtml.g.cs
 C:\Users\Ivo\Desktop\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Repairs\Edit.cshtml.g.cs
 C:\Users\Ivo\Desktop\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Repairs\Index.cshtml.g.cs
+<<<<<<< HEAD
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\WebApp.csprojAssemblyReference.cache
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Cars\Create.cshtml.g.cs
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Cars\Delete.cshtml.g.cs
@@ -1457,3 +1468,5 @@ C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Repairs
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Repairs\Details.cshtml.g.cs
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Repairs\Edit.cshtml.g.cs
 C:\Users\Ivo\source\repos\WebAppDEMO\WebApp\obj\Debug\net5.0\Razor\Views\Repairs\Index.cshtml.g.cs
+=======
+>>>>>>> 80c75658fdbbc3df966ae3c4debeca42484b0a97
