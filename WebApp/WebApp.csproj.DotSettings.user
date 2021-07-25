@@ -1,0 +1,8 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/MappedPaths/=WWWROOT_005CCSS_005CWWWROOT/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/MappedPaths/=WWWROOT_005CCSS_005C_002E_002E_002EWWWROOTIMAGES_00BANNER1_002EJPG/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/MappedPaths/=WWWROOT_005CIMAGES_005CPEXELS_002DPHOTO_002D190575_0020_00281_0029_002EJPG/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=WWWROOT_005CCSS_005CWWWROOT/@EntryIndexedValue">wwwroot\css\wwwroot</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=WWWROOT_005CCSS_005C_002E_002E_002EWWWROOTIMAGES_00BANNER1_002EJPG/@EntryIndexedValue">wwwroot\css\...wwwrootimagesºnner1.jpg</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=WWWROOT_005CIMAGES_005CPEXELS_002DPHOTO_002D190575_0020_00281_0029_002EJPG/@EntryIndexedValue">wwwroot\images\pexels-photo-190575 (1).jpg</s:String></wpf:ResourceDictionary>
